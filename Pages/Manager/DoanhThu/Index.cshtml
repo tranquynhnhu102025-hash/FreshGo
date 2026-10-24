@@ -1,0 +1,128 @@
+@page
+@model FreshGo.Pages.Manager.DoanhThu.IndexModel
+@{
+    ViewData["Title"] = "Doanh thu";
+    ViewData["Breadcrumb"] = "Doanh thu";
+    var maxNgay = Model.TheoNgay.Count > 0 ? Model.TheoNgay.Max(x => x.DoanhThu) : 0;
+}
+
+<form method="get" class="d-flex align-items-end gap-2 mb-3 flex-wrap">
+    <div>
+        <select name="khoangThoiGian" id="khoangThoiGian" class="form-select" style="width:200px" onchange="capNhatHienThiTuyChon(); this.form.submit()">
+            <option value="homnay" selected="@(Model.KhoangThoiGian == "homnay")">Hôm nay</option>
+            <option value="7ngay" selected="@(Model.KhoangThoiGian == "7ngay")">7 ngày</option>
+            <option value="thangnay" selected="@(Model.KhoangThoiGian == "thangnay")">Tháng</option>
+            <option value="tatca" selected="@(Model.KhoangThoiGian == "tatca")">Tất cả</option>
+            <option value="tuychon" selected="@(Model.KhoangThoiGian == "tuychon")">Tùy chọn</option>
+        </select>
+    </div>
+    <div id="khoiTuyChon" style="display:flex; align-items:flex-end; gap:8px;">
+        <div>
+            <label class="form-label mb-1">Từ ngày</label>
+            <input type="date" name="tuNgay" class="form-control" value="@Model.TuNgayLoc.ToString("yyyy-MM-dd")" />
+        </div>
+        <div>
+            <label class="form-label mb-1">Đến ngày</label>
+            <input type="date" name="denNgay" class="form-control" value="@Model.DenNgayLoc.ToString("yyyy-MM-dd")" />
+        </div>
+        <button type="submit" class="btn btn-outline-secondary">Áp dụng</button>
+    </div>
+</form>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="manager-stat">
+            <div class="value">@Model.Summary.TongDoanhThu.ToString("N0")VNĐ</div>
+            <div class="label">Tổng doanh thu</div>
+            <div class="mt-2 d-flex gap-3" style="font-size:0.8rem; color:#6b7280;">
+                <span>Tiền mặt: @Model.Summary.TongDoanhThuTienMat.ToString("N0")VNĐ</span>
+                <span>Chuyển khoản: @Model.Summary.TongDoanhThuChuyenKhoan.ToString("N0")VNĐ</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="manager-stat">
+            <div class="value">@Model.Summary.SoDonHoanTat</div>
+            <div class="label">Đơn hoàn tất</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="manager-stat">
+            <div class="value">@Model.Summary.SoDonThatBai</div>
+            <div class="label">Đơn thất bại</div>
+        </div>
+    </div>
+</div>
+
+<div class="manager-card mb-4">
+    <h6 class="mb-3">Doanh thu theo ngày (@Model.TuNgayLoc.ToString("dd/MM/yyyy") - @Model.DenNgayLoc.ToString("dd/MM/yyyy"))</h6>
+    <div class="revenue-chart">
+        @foreach (var ngay in Model.TheoNgay)
+        {
+            var phanTram = maxNgay > 0 ? (double)(ngay.DoanhThu / maxNgay) * 100 : 0;
+            <div class="revenue-bar-col" title="@ngay.Ngay.ToString("dd/MM"): @ngay.DoanhThu.ToString("N0")VNĐ">
+                <div class="revenue-bar" style="height:@(Math.Max(phanTram, 2))%"></div>
+                <div class="revenue-bar-label">@ngay.Ngay.ToString("dd/MM")</div>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="manager-card" id="don-hang-gan-day">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="mb-0">Đơn hàng gần đây</h6>
+        <form method="get" action="#don-hang-gan-day" class="d-flex align-items-center gap-2">
+            <input type="hidden" name="khoangThoiGian" value="@Model.KhoangThoiGian" />
+            <input type="hidden" name="tuNgay" value="@Model.TuNgayLoc.ToString("yyyy-MM-dd")" />
+            <input type="hidden" name="denNgay" value="@Model.DenNgayLoc.ToString("yyyy-MM-dd")" />
+            <select name="trangThaiLoc" class="form-select form-select-sm" style="width:160px" onchange="this.form.submit()">
+                <option value="" selected="@(string.IsNullOrEmpty(Model.TrangThaiLoc))">Tất cả</option>
+                <option value="@TrangThaiDonOptions.HoanTat" selected="@(Model.TrangThaiLoc == TrangThaiDonOptions.HoanTat)">Hoàn tất</option>
+                <option value="@TrangThaiDonOptions.DaHuy" selected="@(Model.TrangThaiLoc == TrangThaiDonOptions.DaHuy)">Đã hủy</option>
+            </select>
+        </form>
+    </div>
+    <table class="table manager-table align-middle">
+        <thead>
+            <tr>
+                <th>Mã đơn</th>
+                <th>Ngày đặt</th>
+                <th>Tổng thanh toán</th>
+                <th>Phương thức</th>
+                <th>Trạng thái</th>
+                <th>Chi tiết</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var don in Model.DonGanDay)
+            {
+                <tr>
+                    <td>#@don.MaDonHang</td>
+                    <td>@don.NgayDat.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@don.TongThanhToan.ToString("N0")VNĐ</td>
+                    <td>@don.PhuongThucLabel</td>
+                    <td>
+                        <span class="badge @(don.ThanhCong ? "badge-status-conhang" : "badge-status-hethan")">@don.TrangThaiLabel</span>
+                    </td>
+                    <td><a class="btn btn-sm btn-outline-primary" asp-page="/Manager/DonHang/ChiTiet" asp-route-id="@don.MaDonHang">Xem</a></td>
+                </tr>
+            }
+            @if (!Model.DonGanDay.Any())
+            {
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-4">Chi nhánh chưa có đơn hàng nào.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        function capNhatHienThiTuyChon() {
+            var laTuyChon = document.getElementById('khoangThoiGian').value === 'tuychon';
+            document.getElementById('khoiTuyChon').style.display = laTuyChon ? 'flex' : 'none';
+        }
+        capNhatHienThiTuyChon();
+    </script>
+}

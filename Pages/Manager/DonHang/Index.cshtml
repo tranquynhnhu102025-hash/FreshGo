@@ -1,0 +1,54 @@
+@page
+@model FreshGo.Pages.Manager.DonHang.IndexModel
+@{
+    ViewData["Title"] = "Đơn hàng";
+    ViewData["Breadcrumb"] = "Đơn hàng";
+}
+
+<form method="get" class="mb-3">
+    <select name="trangThaiLoc" class="form-select" style="width:220px" onchange="this.form.submit()">
+        <option value="" selected="@(string.IsNullOrEmpty(Model.TrangThaiLoc))">Tất cả trạng thái</option>
+        <option value="Chờ xử lý" selected="@(Model.TrangThaiLoc == "Chờ xử lý")">Chờ xử lý</option>
+        <option value="Đang giao" selected="@(Model.TrangThaiLoc == "Đang giao")">Đang giao</option>
+        <option value="Hoàn tất" selected="@(Model.TrangThaiLoc == "Hoàn tất")">Hoàn tất</option>
+        <option value="Đã hủy" selected="@(Model.TrangThaiLoc == "Đã hủy")">Đã hủy</option>
+    </select>
+</form>
+
+<div class="manager-card">
+    <table class="table manager-table align-middle">
+        <thead>
+            <tr>
+                <th>Mã đơn</th>
+                <th>Ngày đặt</th>
+                <th>Khách hàng</th>
+                <th>Tổng thanh toán</th>
+                <th>Phương thức</th>
+                <th>Người giao</th>
+                <th>Trạng thái</th>
+                <th>Chi tiết</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var don in Model.DanhSach)
+            {
+                <tr>
+                    <td>#@don.MaDonHang</td>
+                    <td>@don.NgayDat.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@don.TenKhachHang</td>
+                    <td>@don.TongThanhToan.ToString("N0")VNĐ</td>
+                    <td>@don.PhuongThucLabel</td>
+                    <td>@(don.TenShipper ?? "Chưa gán")</td>
+                    <td><span class="badge @FreshGo.Pages.Manager.Models.TrangThaiDonOptions.BadgeClass(don.TrangThaiDon)">@don.TrangThaiDon</span></td>
+                    <td><a class="btn btn-sm btn-outline-primary" asp-page="/Manager/DonHang/ChiTiet" asp-route-id="@don.MaDonHang">Xem</a></td>
+                </tr>
+            }
+            @if (!Model.DanhSach.Any())
+            {
+                <tr>
+                    <td colspan="8" class="text-center text-muted py-4">Chi nhánh chưa có đơn hàng nào.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

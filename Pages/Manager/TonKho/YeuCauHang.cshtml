@@ -1,0 +1,93 @@
+@page
+@model FreshGo.Pages.Manager.TonKho.YeuCauHangModel
+@{
+    ViewData["Title"] = "Yêu cầu hàng";
+    ViewData["Breadcrumb"] = "Tồn kho › Yêu cầu hàng";
+}
+
+<div class="d-flex justify-content-end mb-3">
+    <a class="btn btn-outline-secondary" asp-page="/Manager/TonKho/Index">Quay lại tồn kho</a>
+</div>
+
+<div class="manager-card mb-4">
+    <table class="table manager-table align-middle">
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Ảnh</th>
+                <th>Tên sản phẩm</th>
+                <th>Danh mục</th>
+                <th>Đơn giá</th>
+                <th>Hạn sử dụng gần nhất</th>
+                <th>Tác vụ</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{ int stt = 1; }
+            @foreach (var item in Model.DanhSach)
+            {
+                <tr>
+                    <td>@(stt++)</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(item.HinhAnh))
+                        {
+                            <img src="@item.HinhAnh" class="thumb" alt="@item.TenThucPham" />
+                        }
+                        else
+                        {
+                            <div class="thumb"></div>
+                        }
+                    </td>
+                    <td>@item.TenThucPham</td>
+                    <td>@item.TenDanhMuc</td>
+                    <td>@item.GiaBan.ToString("N0")VNĐ/@item.DonViTinh</td>
+                    <td>@(item.HanSuDung?.ToString("dd/MM/yyyy") ?? "—")</td>
+                    <td>
+                        <form method="post" asp-page-handler="Them" class="d-flex gap-2">
+                            <input type="hidden" name="maThucPham" value="@item.MaThucPham" />
+                            <input type="number" name="soLuong" value="1" min="1" class="form-control form-control-sm" style="width:80px" />
+                            <button type="submit" class="btn btn-sm btn-outline-primary text-nowrap">Nhập thêm hàng</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="manager-card">
+    <h6 class="mb-3">Yêu cầu nhập hàng đang soạn</h6>
+    <table class="table manager-table align-middle">
+        <thead>
+            <tr>
+                <th>Tên sản phẩm</th>
+                <th>Đơn vị tính</th>
+                <th>Số lượng cần</th>
+                <th>Tác vụ</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var dong in Model.DangSoan)
+            {
+                <tr>
+                    <td>@dong.TenThucPham</td>
+                    <td>@dong.DonViTinh</td>
+                    <td>@dong.SoLuongCan</td>
+                    <td>
+                        <form method="post" asp-page-handler="Xoa">
+                            <input type="hidden" name="maChiTiet" value="@dong.MaChiTiet" />
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Xóa</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (Model.DangSoan.Any())
+    {
+        <form method="post" asp-page-handler="Gui">
+            <button type="submit" class="btn btn-success">Yêu cầu</button>
+        </form>
+    }
+</div>

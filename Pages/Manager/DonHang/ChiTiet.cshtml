@@ -1,0 +1,162 @@
+@page "{id:int}"
+@model FreshGo.Pages.Manager.DonHang.ChiTietModel
+@{
+    ViewData["Title"] = "Chi tiết đơn hàng";
+    ViewData["Breadcrumb"] = "Đơn hàng › Chi tiết";
+}
+
+@if (Model.DonHang is null)
+{
+    <div class="alert alert-warning">Không tìm thấy đơn hàng này tại chi nhánh.</div>
+}
+else
+{
+    var don = Model.DonHang;
+    <div class="manager-card mb-4 d-flex justify-content-between align-items-center">
+        <div>
+            <h5 class="mb-1">Đơn hàng #@don.MaDonHang</h5>
+            <div class="text-muted">Đặt lúc @don.NgayDat.ToString("dd/MM/yyyy HH:mm")</div>
+        </div>
+        <span class="badge @FreshGo.Pages.Manager.Models.TrangThaiDonOptions.BadgeClass(don.TrangThaiDon)" style="font-size:0.9rem">@don.TrangThaiDon</span>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="manager-card h-100">
+                <h6 class="mb-3">Thông tin giao hàng</h6>
+                <dl class="row mb-0">
+                    <dt class="col-5">Khách hàng</dt>
+                    <dd class="col-7">@don.TenKhachHang</dd>
+
+                    <dt class="col-5">Địa chỉ giao</dt>
+                    <dd class="col-7">@don.DiaChiGiaoHang</dd>
+
+                    <dt class="col-5">SĐT người nhận</dt>
+                    <dd class="col-7">@don.SoDienThoaiNhan</dd>
+
+                    <dt class="col-5">Phương thức TT</dt>
+                    <dd class="col-7">@don.PhuongThucLabel</dd>
+
+                    <dt class="col-5">Đã đối soát COD</dt>
+                    <dd class="col-7">@(don.DaDoiSoatCOD ? "Đã đối soát" : "Chưa đối soát")</dd>
+
+                    @if (!string.IsNullOrEmpty(don.HinhAnhXacNhanGiao))
+                    {
+                        <dt class="col-5">Ảnh xác nhận giao</dt>
+                        <dd class="col-7"><img src="@don.HinhAnhXacNhanGiao" style="max-width:120px;border-radius:6px" /></dd>
+                    }
+                    @if (!string.IsNullOrEmpty(don.LyDoThatBaiHoacHuy))
+                    {
+                        <dt class="col-5">Lý do thất bại/hủy</dt>
+                        <dd class="col-7 text-danger">@don.LyDoThatBaiHoacHuy</dd>
+                    }
+                    @if (don.DanhGiaSao is not null)
+                    {
+                        <dt class="col-5">Đánh giá</dt>
+                        <dd class="col-7">@don.DanhGiaSao &#9733; @don.PhanHoiKhachHang</dd>
+                    }
+                </dl>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="manager-card h-100">
+                <h6 class="mb-3">Hồ sơ người giao hàng</h6>
+                @if (don.TrangThaiDon == TrangThaiDonOptions.ChoXuLy)
+                {
+                    <form method="post" asp-page-handler="Xuly">
+                        <div class="mb-3">
+                            <label class="form-label">Chọn người giao hàng</label>
+                            <select name="MaShipperChon" class="form-select" required>
+                                <option value="">-- Chọn người giao hàng --</option>
+                                @foreach (var sp in Model.DanhSachShipper)
+                                {
+                                    <option value="@sp.MaTaiKhoan">@sp.HoTen - @sp.SoDienThoai</option>
+                                }
+                            </select>
+                            @if (!Model.DanhSachShipper.Any())
+                            {
+                                <div class="form-text text-danger">Chi nhánh chưa có người giao hàng nào để gán.</div>
+                            }
+                        </div>
+                        <button type="submit" class="btn btn-primary" disabled="@(!Model.DanhSachShipper.Any())">Xử lý đơn &amp; giao hàng</button>
+                    </form>
+                }
+                else if (string.IsNullOrEmpty(don.TenShipper))
+                {
+                    <div class="text-muted">Đơn chưa được gán người giao hàng.</div>
+                }
+                else
+                {
+                    <dl class="row mb-0">
+                        <dt class="col-5">Họ tên</dt>
+                        <dd class="col-7">@don.TenShipper</dd>
+
+                        <dt class="col-5">Số điện thoại</dt>
+                        <dd class="col-7">@don.SdtShipper</dd>
+
+                        <dt class="col-5">Biển số xe</dt>
+                        <dd class="col-7">@(don.BienSoXeShipper ?? "—")</dd>
+
+                        <dt class="col-5">CCCD</dt>
+                        <dd class="col-7">@(don.CccdShipper ?? "—")</dd>
+
+                        <dt class="col-5">Sẵn sàng nhận đơn</dt>
+                        <dd class="col-7">
+                            <span class="badge @(don.SanSangNhanDonShipper == true ? "badge-status-conhang" : "badge-status-hethang")">
+                                @(don.SanSangNhanDonShipper == true ? "Sẵn sàng" : "Không sẵn sàng")
+                            </span>
+                        </dd>
+
+                        <dt class="col-5">Điểm tích lũy</dt>
+                        <dd class="col-7">@don.DiemTichLuyShipper</dd>
+                    </dl>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="manager-card">
+        <h6 class="mb-3">Sản phẩm trong đơn</h6>
+        <table class="table manager-table align-middle">
+            <thead>
+                <tr>
+                    <th>Tên sản phẩm</th>
+                    <th>Số lượng</th>
+                    <th>Đơn giá lúc mua</th>
+                    <th>Thành tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var sp in don.SanPham)
+                {
+                    <tr>
+                        <td>@sp.TenThucPham</td>
+                        <td>@sp.SoLuong</td>
+                        <td>@sp.DonGiaLucMua.ToString("N0")VNĐ</td>
+                        <td>@sp.ThanhTien.ToString("N0")VNĐ</td>
+                    </tr>
+                }
+                @if (!don.SanPham.Any())
+                {
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-3">Không có dữ liệu chi tiết sản phẩm.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="d-flex justify-content-end">
+            <table class="mb-0">
+                <tr><td class="text-muted pe-4">Tiền hàng</td><td class="text-end">@don.TongTienHang.ToString("N0")VNĐ</td></tr>
+                <tr><td class="text-muted pe-4">Phí ship</td><td class="text-end">@don.PhiShip.ToString("N0")VNĐ</td></tr>
+                <tr><td class="text-muted pe-4">Giảm giá voucher</td><td class="text-end">-@don.TienGiamVoucher.ToString("N0")VNĐ</td></tr>
+                <tr><td class="fw-bold pe-4">Tổng thanh toán</td><td class="text-end fw-bold">@don.TongThanhToan.ToString("N0")VNĐ</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <a class="btn btn-outline-secondary" asp-page="Index">Quay lại danh sách</a>
+    </div>
+}

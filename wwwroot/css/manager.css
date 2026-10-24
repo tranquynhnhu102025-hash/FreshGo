@@ -1,0 +1,191 @@
+/* Giao diện riêng cho phân hệ Quản lý Chi nhánh (Pages/Manager) */
+
+/* Đặt màu nền ngay từ html để lúc chuyển trang (trình duyệt phải tải lại toàn bộ HTML mới) không bị chớp trắng,
+   mà chớp ra màu nền xám nhạt giống trang, đỡ chói mắt hơn. */
+html {
+    background-color: #f4f6f8;
+}
+
+body {
+    background-color: #f4f6f8;
+}
+
+.manager-topbar {
+    background-color: #16a34a;
+    color: #fff;
+    padding: 12px 24px;
+}
+
+.manager-topbar-link {
+    color: #d1d5db;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.15s ease;
+}
+
+.manager-topbar-link:hover {
+    color: #fff;
+}
+
+.manager-shell {
+    min-height: calc(100vh - 48px);
+}
+
+.manager-sidebar {
+    width: 230px;
+    flex: 0 0 230px;
+    background-color: #ffffff;
+    border-right: 1px solid #e5e7eb;
+    padding: 16px 0;
+}
+
+.manager-content {
+    min-width: 0;
+    overflow-x: auto;
+}
+
+.manager-sidebar-title {
+    font-weight: 600;
+    color: #6b7280;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    padding: 0 20px 10px;
+}
+
+.manager-nav-list {
+    position: relative;
+}
+
+/* Thanh highlight trượt tới mục đang active bằng JS (xem script cuối _ManagerLayout.cshtml).
+   Nằm dưới chữ (z-index thấp hơn link) nên không che mất tên mục. */
+.manager-nav-indicator {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 41px;
+    background-color: #eef2ff;
+    border-left: 3px solid #4f46e5;
+    transition: transform 0.25s ease;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.manager-nav-link {
+    position: relative;
+    z-index: 1;
+    display: block;
+    padding: 10px 20px;
+    color: #374151;
+    text-decoration: none;
+    font-size: 0.95rem;
+    border-left: 3px solid transparent;
+}
+
+.manager-nav-link:hover {
+    background-color: #f3f4f6;
+}
+
+.manager-nav-link.active {
+    color: #4f46e5;
+    font-weight: 600;
+}
+
+.manager-content {
+    padding: 24px;
+}
+
+.manager-breadcrumb {
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin-bottom: 16px;
+}
+
+.manager-breadcrumb a {
+    color: #6b7280;
+    text-decoration: none;
+}
+
+.manager-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.manager-stat {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 16px 20px;
+}
+
+.manager-stat .value {
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.manager-stat .label {
+    color: #6b7280;
+    font-size: 0.85rem;
+}
+
+.manager-table thead {
+    background-color: #f9fafb;
+}
+
+.manager-table td,
+.manager-table th {
+    font-size: 0.8rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.manager-table .badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.manager-table img.thumb {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 6px;
+    background: #f3f4f6;
+}
+
+.badge-status-conhang { background-color: #16a34a; }
+.badge-status-hethang { background-color: #6b7280; }
+.badge-status-hethan { background-color: #dc2626; }
+.badge-status-danggiao { background-color: #2563eb; }
+
+.revenue-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 160px;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 4px;
+}
+
+.revenue-bar-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+}
+
+.revenue-bar {
+    width: 100%;
+    max-width: 28px;
+    background-color: #4f46e5;
+    border-radius: 3px 3px 0 0;
+}
+
+.revenue-bar-label {
+    margin-top: 6px;
+    font-size: 0.7rem;
+    color: #6b7280;
+    white-space: nowrap;
+}

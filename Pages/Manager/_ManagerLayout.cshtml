@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Quản lý chi nhánh FreshGo</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/manager.css" asp-append-version="true" />
+</head>
+<body>
+    @{
+        var path = Context.Request.Path.Value ?? "";
+        bool IsActive(string prefix) => path.Equals(prefix, StringComparison.OrdinalIgnoreCase)
+            || path.StartsWith(prefix + "/", StringComparison.OrdinalIgnoreCase);
+    }
+    <header class="manager-topbar d-flex align-items-center justify-content-between">
+        <span class="fw-semibold">FreshGo</span>
+        <nav class="d-flex gap-3">
+            <a class="manager-topbar-link" asp-page="/Index">Vào trang web</a>
+            <a class="manager-topbar-link" asp-page="/Manager/Index">Trang chủ Quản lý</a>
+        </nav>
+    </header>
+
+    <div class="manager-shell d-flex">
+        <aside class="manager-sidebar">
+            <div class="manager-sidebar-title">Quản lý chi nhánh</div>
+            <div class="manager-nav-list">
+                <div class="manager-nav-indicator" id="managerNavIndicator"></div>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="manager-nav-link @(IsActive("/Manager") && !IsActive("/Manager/TonKho") && !IsActive("/Manager/ThongTinChiNhanh") && !IsActive("/Manager/DoanhThu") && !IsActive("/Manager/DonHang") ? "active" : "")"
+                           asp-page="/Manager/Index">Trang chủ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="manager-nav-link @(IsActive("/Manager/TonKho") ? "active" : "")"
+                           asp-page="/Manager/TonKho/Index">Tồn kho</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="manager-nav-link @(IsActive("/Manager/DonHang") ? "active" : "")"
+                           asp-page="/Manager/DonHang/Index">Đơn hàng</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="manager-nav-link @(IsActive("/Manager/DoanhThu") ? "active" : "")"
+                           asp-page="/Manager/DoanhThu/Index">Doanh thu</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="manager-nav-link @(IsActive("/Manager/ThongTinChiNhanh") ? "active" : "")"
+                           asp-page="/Manager/ThongTinChiNhanh">Thông tin chi nhánh</a>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="manager-content flex-grow-1">
+            <nav class="manager-breadcrumb" aria-label="breadcrumb">
+                <a asp-page="/Manager/Index">Trang chủ</a>
+                @if (ViewData["Breadcrumb"] is string bc && !string.IsNullOrEmpty(bc))
+                {
+                    <span class="mx-1">›</span>
+                    <span>@bc</span>
+                }
+            </nav>
+
+            @if (TempData["Thanhcong"] is string ok && !string.IsNullOrEmpty(ok))
+            {
+                <div class="alert alert-success">@ok</div>
+            }
+            @if (TempData["Loi"] is string err && !string.IsNullOrEmpty(err))
+            {
+                <div class="alert alert-danger">@err</div>
+            }
+
+            @RenderBody()
+        </main>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Thanh highlight ở sidebar trượt tới mục đang active mỗi khi chuyển trang,
+        // thay vì chỉ "nhảy" thẳng tới vị trí mới (do mỗi lần chuyển mục là 1 lần tải trang mới).
+        (function () {
+            var indicator = document.getElementById('managerNavIndicator');
+            var active = document.querySelector('.manager-nav-link.active');
+            if (!indicator || !active) { if (indicator) indicator.style.display = 'none'; return; }
+
+            var viTriMoi = active.offsetTop;
+            indicator.style.height = active.offsetHeight + 'px';
+
+            var viTriTruoc = sessionStorage.getItem('managerNavIndicatorTop');
+            if (viTriTruoc !== null) {
+                indicator.style.transition = 'none';
+                indicator.style.transform = 'translateY(' + viTriTruoc + 'px)';
+                indicator.offsetHeight; // ép trình duyệt vẽ lại trước khi bật transition, tránh bị trượt từ gốc (0,0)
+                indicator.style.transition = '';
+            }
+
+            requestAnimationFrame(function () {
+                indicator.style.transform = 'translateY(' + viTriMoi + 'px)';
+            });
+
+            sessionStorage.setItem('managerNavIndicatorTop', viTriMoi);
+        })();
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

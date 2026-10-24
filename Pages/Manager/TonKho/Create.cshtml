@@ -1,0 +1,71 @@
+@page
+@model FreshGo.Pages.Manager.TonKho.CreateModel
+@{
+    ViewData["Title"] = "Thêm mặt hàng vào kho";
+    ViewData["Breadcrumb"] = "Tồn kho › Thêm mới";
+}
+
+<div class="manager-card" style="max-width:620px">
+    <form method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+        <div class="mb-3">
+            <label class="form-label">Tên sản phẩm</label>
+            <input asp-for="Form.TenThucPhamMoi" class="form-control" placeholder="VD: Dưa leo" />
+            <span asp-validation-for="Form.TenThucPhamMoi" class="text-danger"></span>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Danh mục</label>
+                <select asp-for="Form.MaDanhMuc" class="form-select">
+                    <option value="">-- Chọn danh mục --</option>
+                    @foreach (var dm in Model.DanhMucList)
+                    {
+                        <option value="@dm.MaDanhMuc">@dm.TenDanhMuc</option>
+                    }
+                </select>
+                <span asp-validation-for="Form.MaDanhMuc" class="text-danger"></span>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Đơn vị tính</label>
+                <input asp-for="Form.DonViTinhMoi" class="form-control" placeholder="VD: kg, bó, thùng" />
+                <span asp-validation-for="Form.DonViTinhMoi" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Đơn giá (VNĐ)</label>
+            <input asp-for="Form.GiaBanMoi" type="number" min="0" step="500" class="form-control" />
+            <span asp-validation-for="Form.GiaBanMoi" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Số lượng nhập kho</label>
+            <input asp-for="Form.SoLuongTon" type="number" min="0" class="form-control" />
+            <span asp-validation-for="Form.SoLuongTon" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Hạn sử dụng (nếu có)</label>
+            <input asp-for="Form.HanSuDung" type="date" class="form-control" />
+            <span asp-validation-for="Form.HanSuDung" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Trạng thái</label>
+            <select asp-for="Form.TrangThaiKinhDoanh" class="form-select">
+                @foreach (var opt in TrangThaiOptions.All)
+                {
+                    <option value="@opt.Value">@opt.Label</option>
+                }
+            </select>
+            <span asp-validation-for="Form.TrangThaiKinhDoanh" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">+ Thêm vào kho</button>
+        <a class="btn btn-outline-secondary" asp-page="Index">Hủy</a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,70 @@
+@page "{id:int}"
+@model FreshGo.Pages.Manager.TonKho.EditModel
+@{
+    ViewData["Title"] = "Sửa tồn kho";
+    ViewData["Breadcrumb"] = "Tồn kho › Sửa";
+}
+
+@if (Model.Item is null)
+{
+    <div class="alert alert-warning">Không tìm thấy mặt hàng này trong kho chi nhánh.</div>
+}
+else
+{
+    <div class="manager-card" style="max-width:560px">
+        <h5 class="mb-1">@Model.Item.TenThucPham</h5>
+        <div class="text-muted mb-3">@Model.Item.TenDanhMuc &middot; @Model.Item.GiaBan.ToString("N0")VNĐ/@Model.Item.DonViTinh</div>
+
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+            <div class="mb-3">
+                <label class="form-label">Đơn giá (VNĐ)</label>
+                <input asp-for="Form.GiaBan" type="number" min="0" step="500" class="form-control" />
+                <span asp-validation-for="Form.GiaBan" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Trạng thái</label>
+                <select asp-for="Form.TrangThaiKinhDoanh" class="form-select">
+                    @foreach (var opt in TrangThaiOptions.All)
+                    {
+                        <option value="@opt.Value">@opt.Label</option>
+                    }
+                </select>
+                <span asp-validation-for="Form.TrangThaiKinhDoanh" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Số lượng tồn</label>
+                <input asp-for="Form.SoLuongTon" type="number" min="0" class="form-control" />
+                <span asp-validation-for="Form.SoLuongTon" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Số lượng lỗi / hư</label>
+                <input asp-for="Form.SoLuongLoiHu" type="number" min="0" class="form-control" />
+                <span asp-validation-for="Form.SoLuongLoiHu" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Lý do lỗi / hư (nếu có)</label>
+                <input asp-for="Form.LyDoLoiHu" class="form-control" placeholder="VD: Dập hỏng khi vận chuyển" />
+                <span asp-validation-for="Form.LyDoLoiHu" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Hạn sử dụng</label>
+                <input asp-for="Form.HanSuDung" type="date" class="form-control" />
+                <span asp-validation-for="Form.HanSuDung" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Lưu</button>
+            <a class="btn btn-outline-secondary" asp-page="Index">Hủy</a>
+        </form>
+    </div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
