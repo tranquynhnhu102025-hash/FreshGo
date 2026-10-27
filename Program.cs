@@ -1,7 +1,14 @@
+using Microsoft.EntityFrameworkCore;
+using FreshGo;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+
+// Đăng ký DbContext TRƯỚC khi gọi builder.Build()
+builder.Services.AddDbContext<FreshGoContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
@@ -14,7 +21,6 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseRouting();
 
 app.UseAuthorization();

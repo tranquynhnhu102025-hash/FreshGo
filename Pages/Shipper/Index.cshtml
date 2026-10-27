@@ -1,4 +1,105 @@
 ﻿@page
-@model MyApp.Namespace.IndexModel
+@model FreshGo.Pages.Shipper.IndexModel
 @{
+    ViewData["Title"] = "Trang Shipper";
 }
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Phân Hệ Shipper</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active">Quản lý giao nhận đơn hàng (Khu vực Q12)</li>
+    </ol>
+
+    <!-- Khối thẻ thống kê động -->
+    <div class="row">
+        <div class="col-xl-4 col-md-6">
+            <div class="card bg-primary text-white mb-4">
+                <div class="card-body">
+                    <h5>Đơn đang giao</h5>
+                    <h3>@Model.DangGiaoCount đơn</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-md-6">
+            <div class="card bg-success text-white mb-4">
+                <div class="card-body">
+                    <h5>Đã giao thành công</h5>
+                    <h3>@Model.DaGiaoCount đơn</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-md-6">
+            <div class="card bg-warning text-dark mb-4">
+                <div class="card-body">
+                    <h5>Tiền thu hộ (COD)</h5>
+                    <h3>@Model.TotalCod.ToString("N0") đ</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bảng danh sách đơn hàng thực tế từ Database -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i> Danh sách đơn hàng trong hệ thống
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Mã đơn</th>
+                        <th>Địa chỉ giao</th>
+                        <th>Số điện thoại</th>
+                        <th>Tổng tiền</th>
+                        <th>Thanh toán</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.DonHangList != null && Model.DonHangList.Any())
+                    {
+                        foreach (var item in Model.DonHangList)
+                        {
+                            <tr>
+                                <td>#@item.MaDonHang</td>
+                                <td>@item.DiaChiGiaoHang</td>
+                                <td>@item.SoDienThoaiNhan</td>
+                                <td>@Model.TotalCod.ToString() @item.TongThanhToan.ToString("N0") đ</td>
+                                <td>@item.PhuongThucThanhToan</td>
+                                <td>
+                                    @if (item.TrangThaiDon == "Đang giao" || item.TrangThaiDon == "Chờ xử lý")
+                                    {
+                                        <span class="badge bg-warning text-dark">@item.TrangThaiDon</span>
+                                    }
+                                    else if (item.TrangThaiDon == "Đã giao")
+                                    {
+                                        <span class="badge bg-success">@item.TrangThaiDon</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">@item.TrangThaiDon</span>
+                                    }
+                                </td>
+                                <td>
+                                    <form method="post" style="display:inline;">
+                                        <button type="submit" asp-page-handler="Complete" asp-route-id="@item.MaDonHang" class="btn btn-success btn-sm">Hoàn thành</button>
+                                    </form>
+                                    <form method="post" style="display:inline;">
+                                        <button type="submit" asp-page-handler="Cancel" asp-route-id="@item.MaDonHang" class="btn btn-danger btn-sm">Hủy đơn</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center text-muted">Chưa có đơn hàng nào trong hệ thống.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
