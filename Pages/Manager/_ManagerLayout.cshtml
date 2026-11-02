@@ -3,72 +3,144 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Quản lý chi nhánh FreshGo</title>
+    <title>@ViewData["Title"] - Quản lý FreshGo</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/manager.css" asp-append-version="true" />
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], },
+                    colors: { freshgo: '#10b981', }
+                }
+            }
+        }
+    </script>
+    <style>
+        a { text-decoration: none !important; }
+        /* Xóa màu nền xám cũ ở đây để dùng màu xanh của Tailwind */
+    </style>
 </head>
-<body>
+<!-- Phủ nền xanh ngọc nhạt (bg-emerald-50) cho toàn bộ trang -->
+<body class="bg-emerald-50 m-0 p-0 flex h-screen text-slate-800 overflow-hidden font-sans antialiased">
     @{
         var path = Context.Request.Path.Value ?? "";
         bool IsActive(string prefix) => path.Equals(prefix, StringComparison.OrdinalIgnoreCase)
             || path.StartsWith(prefix + "/", StringComparison.OrdinalIgnoreCase);
+        var isTrangChu = IsActive("/Manager") && !IsActive("/Manager/TonKho") && !IsActive("/Manager/ThongTinChiNhanh") && !IsActive("/Manager/DoanhThu") && !IsActive("/Manager/DonHang");
     }
-    <header class="manager-topbar d-flex align-items-center justify-content-between">
-        <span class="fw-semibold">FreshGo</span>
-        <nav class="d-flex gap-3">
-            <a class="manager-topbar-link" asp-page="/Index">Vào trang web</a>
-            <a class="manager-topbar-link" asp-page="/Manager/Index">Trang chủ Quản lý</a>
-        </nav>
-    </header>
 
-    <div class="manager-shell d-flex">
-        <aside class="manager-sidebar">
-            <div class="manager-sidebar-title">Quản lý chi nhánh</div>
-            <div class="manager-nav-list">
-                <div class="manager-nav-indicator" id="managerNavIndicator"></div>
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="manager-nav-link @(IsActive("/Manager") && !IsActive("/Manager/TonKho") && !IsActive("/Manager/ThongTinChiNhanh") && !IsActive("/Manager/DoanhThu") && !IsActive("/Manager/DonHang") ? "active" : "")"
-                           asp-page="/Manager/Index">Trang chủ</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="manager-nav-link @(IsActive("/Manager/TonKho") ? "active" : "")"
-                           asp-page="/Manager/TonKho/Index">Tồn kho</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="manager-nav-link @(IsActive("/Manager/DonHang") ? "active" : "")"
-                           asp-page="/Manager/DonHang/Index">Đơn hàng</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="manager-nav-link @(IsActive("/Manager/DoanhThu") ? "active" : "")"
-                           asp-page="/Manager/DoanhThu/Index">Doanh thu</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="manager-nav-link @(IsActive("/Manager/ThongTinChiNhanh") ? "active" : "")"
-                           asp-page="/Manager/ThongTinChiNhanh">Thông tin chi nhánh</a>
-                    </li>
-                </ul>
+    <aside class="w-72 bg-white border-r border-emerald-100 flex flex-col shadow-[4px_0_24px_rgba(16,185,129,0.05)] z-20 relative">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 via-emerald-400 to-purple-400"></div>
+        
+        <div class="h-16 flex items-center px-6 border-b border-emerald-50 mt-1">
+            <div class="flex items-center gap-2 text-freshgo font-bold text-2xl tracking-tight">
+                <svg class="w-8 h-8 drop-shadow-sm" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                FreshGo<span class="text-rose-500">.</span>
             </div>
-        </aside>
+        </div>
 
-        <main class="manager-content flex-grow-1">
-            <nav class="manager-breadcrumb" aria-label="breadcrumb">
-                <a asp-page="/Manager/Index">Trang chủ</a>
+        <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+            <div class="px-2 text-xs font-bold text-emerald-600/70 uppercase tracking-wider mb-4">Menu Quản Lý</div>
+            
+            @{
+                var navClass = "flex items-center px-3 py-2 text-sm font-semibold rounded-xl transition-all duration-300 group";
+                var activeClass = "bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-md shadow-emerald-200/50";
+                var inactiveClass = "text-slate-600 hover:bg-emerald-50 hover:text-emerald-900";
+            }
+            
+            <a class="@navClass @(isTrangChu ? activeClass : inactiveClass)" asp-page="/Manager/Index">
+                <div class="p-2 rounded-lg mr-3 transition-colors @(isTrangChu ? "bg-white/20 text-white" : "bg-blue-100 text-blue-600 group-hover:bg-blue-200")">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                </div>
+                Trang chủ
+            </a>
+            
+            <a class="@navClass @(IsActive("/Manager/TonKho") ? activeClass : inactiveClass)" asp-page="/Manager/TonKho/Index">
+                <div class="p-2 rounded-lg mr-3 transition-colors @(IsActive("/Manager/TonKho") ? "bg-white/20 text-white" : "bg-amber-100 text-amber-500 group-hover:bg-amber-200")">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                </div>
+                Tồn kho
+            </a>
+            
+            <a class="@navClass @(IsActive("/Manager/DonHang") ? activeClass : inactiveClass)" asp-page="/Manager/DonHang/Index">
+                <div class="p-2 rounded-lg mr-3 transition-colors @(IsActive("/Manager/DonHang") ? "bg-white/20 text-white" : "bg-rose-100 text-rose-500 group-hover:bg-rose-200")">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                </div>
+                Đơn hàng
+            </a>
+            
+            <a class="@navClass @(IsActive("/Manager/DoanhThu") ? activeClass : inactiveClass)" asp-page="/Manager/DoanhThu/Index">
+                <div class="p-2 rounded-lg mr-3 transition-colors @(IsActive("/Manager/DoanhThu") ? "bg-white/20 text-white" : "bg-purple-100 text-purple-600 group-hover:bg-purple-200")">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                </div>
+                Doanh thu
+            </a>
+            
+            <a class="@navClass @(IsActive("/Manager/ThongTinChiNhanh") ? activeClass : inactiveClass)" asp-page="/Manager/ThongTinChiNhanh">
+                <div class="p-2 rounded-lg mr-3 transition-colors @(IsActive("/Manager/ThongTinChiNhanh") ? "bg-white/20 text-white" : "bg-cyan-100 text-cyan-600 group-hover:bg-cyan-200")">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                </div>
+                Thông tin chi nhánh
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-emerald-50">
+            <div class="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-emerald-50/50 transition-colors cursor-pointer group">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 text-white flex items-center justify-center font-bold shadow-md group-hover:scale-105 transition-transform">
+                    QN
+                </div>
+                <div class="flex-1 overflow-hidden">
+                    <div class="text-sm font-bold text-slate-800 truncate">Quỳnh Như</div>
+                    <div class="text-xs text-emerald-600 truncate font-medium">Quản lý cửa hàng</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <div class="flex-1 flex flex-col overflow-hidden relative">
+        <header class="h-16 bg-white/70 backdrop-blur-md border-b border-emerald-100/50 flex items-center justify-between px-8 z-10">
+            <nav class="flex items-center text-sm font-medium text-slate-500" aria-label="breadcrumb">
+                <a class="hover:text-freshgo transition-colors" asp-page="/Manager/Index">FreshGo</a>
                 @if (ViewData["Breadcrumb"] is string bc && !string.IsNullOrEmpty(bc))
                 {
-                    <span class="mx-1">›</span>
-                    <span>@bc</span>
+                    <svg class="w-4 h-4 mx-2 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    <span class="text-emerald-700 font-bold">@bc</span>
                 }
             </nav>
 
+            <nav class="flex gap-4 items-center text-sm font-semibold">
+                <a class="flex items-center gap-2 text-emerald-600 hover:text-emerald-700 transition-colors bg-white hover:bg-emerald-100 px-4 py-2 rounded-lg shadow-sm border border-emerald-100" asp-page="/Index">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                    Xem Website
+                </a>
+            </nav>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-8 relative">
+            <!-- Nền dốc xanh ngọc trải mượt -->
+            <div class="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-emerald-100/60 to-transparent -z-10 pointer-events-none"></div>
+
             @if (TempData["Thanhcong"] is string ok && !string.IsNullOrEmpty(ok))
             {
-                <div class="alert alert-success">@ok</div>
+                <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-xl mb-6 shadow-sm flex items-center gap-3">
+                    <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <p class="m-0 text-sm font-medium">@ok</p>
+                </div>
             }
             @if (TempData["Loi"] is string err && !string.IsNullOrEmpty(err))
             {
-                <div class="alert alert-danger">@err</div>
+                <div class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-xl mb-6 shadow-sm flex items-center gap-3">
+                    <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <p class="m-0 text-sm font-medium">@err</p>
+                </div>
             }
 
             @RenderBody()
@@ -77,34 +149,6 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script>
-        // Thanh highlight ở sidebar trượt tới mục đang active mỗi khi chuyển trang,
-        // thay vì chỉ "nhảy" thẳng tới vị trí mới (do mỗi lần chuyển mục là 1 lần tải trang mới).
-        (function () {
-            var indicator = document.getElementById('managerNavIndicator');
-            var active = document.querySelector('.manager-nav-link.active');
-            if (!indicator || !active) { if (indicator) indicator.style.display = 'none'; return; }
-
-            var viTriMoi = active.offsetTop;
-            indicator.style.height = active.offsetHeight + 'px';
-
-            var viTriTruoc = sessionStorage.getItem('managerNavIndicatorTop');
-            if (viTriTruoc !== null) {
-                indicator.style.transition = 'none';
-                indicator.style.transform = 'translateY(' + viTriTruoc + 'px)';
-                indicator.offsetHeight; // ép trình duyệt vẽ lại trước khi bật transition, tránh bị trượt từ gốc (0,0)
-                indicator.style.transition = '';
-            }
-
-            requestAnimationFrame(function () {
-                indicator.style.transform = 'translateY(' + viTriMoi + 'px)';
-            });
-
-            sessionStorage.setItem('managerNavIndicatorTop', viTriMoi);
-        })();
-    </script>
-
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

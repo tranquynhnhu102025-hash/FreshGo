@@ -1,10 +1,80 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Cổng Hệ Thống FreshGo";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="bg-gradient-to-br from-slate-900 via-emerald-950 to-teal-950 min-h-screen text-gray-100 pb-20 font-sans relative overflow-hidden">
+    
+    <!-- Hiệu ứng ánh sáng nền trang trí -->
+    <div class="absolute top-0 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute bottom-10 right-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+    <!-- Banner chính -->
+    <div class="pt-24 pb-32 px-4 text-center relative z-10">
+        <span class="inline-flex items-center gap-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest mb-4 shadow-sm backdrop-blur-md">
+            🚀 Hệ thống quản trị tập trung
+        </span>
+        <h1 class="text-4xl md:text-6xl font-black mb-6 tracking-tight text-white drop-shadow-md">
+            Hệ sinh thái <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">FreshGo</span>
+        </h1>
+        <p class="text-gray-300 text-base md:text-lg font-medium max-w-2xl mx-auto leading-relaxed">
+            Nền tảng thương mại điện tử thực phẩm sạch. Chọn phân hệ bên dưới để bắt đầu làm việc và trải nghiệm.
+        </p>
+    </div>
+
+    <!-- 4 Khung Menu Phân Hệ (Modules) -->
+    <div class="max-w-6xl mx-auto px-4 -mt-16 relative z-20">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            
+            <!-- 1. Customer (Khách hàng) -->
+            <a asp-page="/Customer/Index" class="bg-white/10 backdrop-blur-xl rounded-3xl p-7 border border-white/10 shadow-2xl hover:bg-white/15 hover:border-emerald-500/50 hover:-translate-y-2 transition-all duration-300 group flex flex-col items-center text-center">
+                <div class="w-20 h-20 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-2xl flex items-center justify-center text-white mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform shadow-lg shadow-emerald-900/30">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2 group-hover:text-emerald-300 transition-colors">Cửa hàng</h3>
+                <p class="text-xs text-gray-400 font-medium leading-relaxed mb-6">Giao diện mua sắm, giỏ hàng và đặt nông sản của khách hàng</p>
+                <span class="mt-auto inline-flex items-center gap-1.5 bg-emerald-500/20 text-emerald-300 text-xs font-bold px-4 py-2 rounded-xl group-hover:bg-emerald-500 group-hover:text-white transition-all">
+                    Trải nghiệm ngay &rarr;
+                </span>
+            </a>
+
+            <!-- 2. Manager (Quản lý) -->
+            <a asp-page="/Manager/Index" class="bg-white/10 backdrop-blur-xl rounded-3xl p-7 border border-white/10 shadow-2xl hover:bg-white/15 hover:border-blue-500/50 hover:-translate-y-2 transition-all duration-300 group flex flex-col items-center text-center">
+                <div class="w-20 h-20 bg-gradient-to-br from-blue-400 to-indigo-600 rounded-2xl flex items-center justify-center text-white mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform shadow-lg shadow-blue-900/30">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2 group-hover:text-blue-300 transition-colors">Quản lý (Manager)</h3>
+                <p class="text-xs text-gray-400 font-medium leading-relaxed mb-6">Bảng điều khiển doanh thu, sản phẩm và duyệt đơn hàng</p>
+                <span class="mt-auto inline-flex items-center gap-1.5 bg-blue-500/20 text-blue-300 text-xs font-bold px-4 py-2 rounded-xl group-hover:bg-blue-500 group-hover:text-white transition-all">
+                    Trải nghiệm ngay &rarr;
+                </span>
+            </a>
+
+            <!-- 3. Shipper (Giao hàng) -->
+            <a asp-page="/Shipper/Index" class="bg-white/10 backdrop-blur-xl rounded-3xl p-7 border border-white/10 shadow-2xl hover:bg-white/15 hover:border-amber-500/50 hover:-translate-y-2 transition-all duration-300 group flex flex-col items-center text-center">
+                <div class="w-20 h-20 bg-gradient-to-br from-amber-400 to-orange-600 rounded-2xl flex items-center justify-center text-white mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform shadow-lg shadow-amber-900/30">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 100 2 1 1 0 000-2zm6 0a1 1 0 100 2 1 1 0 000-2z"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2 group-hover:text-amber-300 transition-colors">Giao hàng (Shipper)</h3>
+                <p class="text-xs text-gray-400 font-medium leading-relaxed mb-6">Tiếp nhận đơn, cập nhật trạng thái vận chuyển và lộ trình</p>
+                <span class="mt-auto inline-flex items-center gap-1.5 bg-amber-500/20 text-amber-300 text-xs font-bold px-4 py-2 rounded-xl group-hover:bg-amber-500 group-hover:text-white transition-all">
+                    Trải nghiệm ngay &rarr;
+                </span>
+            </a>
+
+            <!-- 4. Admin (Hệ thống) -->
+            <a asp-page="/Admin/Index" class="bg-white/10 backdrop-blur-xl rounded-3xl p-7 border border-white/10 shadow-2xl hover:bg-white/15 hover:border-purple-500/50 hover:-translate-y-2 transition-all duration-300 group flex flex-col items-center text-center">
+                <div class="w-20 h-20 bg-gradient-to-br from-purple-400 to-pink-600 rounded-2xl flex items-center justify-center text-white mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform shadow-lg shadow-purple-900/30">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2 group-hover:text-purple-300 transition-colors">Quản trị (Admin)</h3>
+                <p class="text-xs text-gray-400 font-medium leading-relaxed mb-6">Quản lý tài khoản người dùng, phân quyền và cấu hình hệ thống</p>
+                <span class="mt-auto inline-flex items-center gap-1.5 bg-purple-500/20 text-purple-300 text-xs font-bold px-4 py-2 rounded-xl group-hover:bg-purple-500 group-hover:text-white transition-all">
+                    Trải nghiệm ngay &rarr;
+                </span>
+            </a>
+
+        </div>
+    </div>
 </div>
