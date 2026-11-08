@@ -1,0 +1,50 @@
+@page
+@model FreshGo.Pages.Order.CreateModel
+@{
+    ViewData["Title"] = "Tạo đơn hàng mới";
+}
+
+<div class="container px-4 mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4><i class="fas fa-plus-circle me-2"></i> Tạo đơn hàng mới </h4>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Địa chỉ giao hàng</label>
+                    <input asp-for="DonHang.DiaChiGiaoHang" class="form-control" placeholder="Ví dụ: 331 Quốc lộ 1A, Quận 12" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Số điện thoại người nhận</label>
+                    <input asp-for="DonHang.SoDienThoaiNhan" class="form-control" placeholder="Ví dụ: 0903333333" required />
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Tổng tiền hàng (VNĐ)</label>
+                        <input asp-for="DonHang.TongTienHang" type="number" class="form-control" placeholder="Ví dụ: 250000" required />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Phí ship (VNĐ)</label>
+                        <input asp-for="DonHang.PhiShip" type="number" class="form-control" value="15000" required />
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Phương thức thanh toán</label>
+                    <select asp-for="DonHang.PhuongThucThanhToan" class="form-control">
+                        <option value="COD">COD (Tiền mặt khi nhận hàng)</option>
+                        <option value="Chuyển khoản">Chuyển khoản ngân hàng</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-save me-1"></i> Lưu và đẩy đơn cho Shipper
+                </button>
+                <a asp-page="/Shipper/Index" class="btn btn-secondary">Quay lại trang Shipper</a>
+            </form>
+        </div>
+    </div>
+</div>

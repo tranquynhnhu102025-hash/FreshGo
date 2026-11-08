@@ -4,39 +4,59 @@
     ViewData["Title"] = "Trang Shipper";
 }
 
-<div class="container-fluid px-4">
-    <h1 class="mt-4">Phân Hệ Shipper</h1>
-    <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item active">Quản lý giao nhận đơn hàng (Khu vực Q12)</li>
-    </ol>
-
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold">Phân Hệ Shipper</h2>
+        <p class="text-muted">Quản lý giao nhận đơn hàng (Khu vực Q12)</p>
+    </div>
+    <!-- Thêm nút bấm dẫn tới trang Tạo đơn hàng -->
+    <a asp-page="/Order/Create" class="btn btn-primary shadow-sm">
+        <i class="fas fa-plus-circle me-1"></i> Tạo đơn hàng mới
+    </a>
+</div>
+    
     <!-- Khối thẻ thống kê động -->
     <div class="row">
-        <div class="col-xl-4 col-md-6">
-            <div class="card bg-primary text-white mb-4">
-                <div class="card-body">
-                    <h5>Đơn đang giao</h5>
-                    <h3>@Model.DangGiaoCount đơn</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-4 col-md-6">
-            <div class="card bg-success text-white mb-4">
-                <div class="card-body">
-                    <h5>Đã giao thành công</h5>
-                    <h3>@Model.DaGiaoCount đơn</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-4 col-md-6">
-            <div class="card bg-warning text-dark mb-4">
-                <div class="card-body">
-                    <h5>Tiền thu hộ (COD)</h5>
-                    <h3>@Model.TotalCod.ToString("N0") đ</h3>
-                </div>
+    <!-- Đơn đang giao -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card bg-primary text-white shadow-sm h-100">
+            <div class="card-body">
+                <h6 class="text-uppercase fw-bold opacity-75">Đang giao</h6>
+                <h3 class="mb-0 fw-bold">@Model.DangGiaoCount <small class="fs-6 fw-normal">đơn</small></h3>
             </div>
         </div>
     </div>
+
+    <!-- Đã giao thành công -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card bg-success text-white shadow-sm h-100">
+            <div class="card-body">
+                <h6 class="text-uppercase fw-bold opacity-75">Đã hoàn thành</h6>
+                <h3 class="mb-0 fw-bold">@Model.DaGiaoCount <small class="fs-6 fw-normal">đơn</small></h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tiền thu hộ COD -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card bg-warning text-dark shadow-sm h-100">
+            <div class="card-body">
+                <h6 class="text-uppercase fw-bold opacity-75">Tiền thu hộ (COD)</h6>
+                <h3 class="mb-0 fw-bold">@Model.TotalCod.ToString("N0") <small class="fs-6 fw-normal">đ</small></h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Thu nhập (Phí ship) -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card bg-info text-white shadow-sm h-100">
+            <div class="card-body">
+                <h6 class="text-uppercase fw-bold opacity-75">Thu nhập (Phí ship)</h6>
+                <h3 class="mb-0 fw-bold">@Model.TotalShippingEarnings.ToString("N0") <small class="fs-6 fw-normal">đ</small></h3>
+            </div>
+        </div>
+    </div>
+</div>
 
     <!-- Bảng danh sách đơn hàng thực tế từ Database -->
     <div class="card mb-4">
@@ -65,7 +85,7 @@
                                 <td>#@item.MaDonHang</td>
                                 <td>@item.DiaChiGiaoHang</td>
                                 <td>@item.SoDienThoaiNhan</td>
-                                <td>@Model.TotalCod.ToString() @item.TongThanhToan.ToString("N0") đ</td>
+                                <td><strong>@item.TongThanhToan.ToString("N0") đ</strong></td>
                                 <td>@item.PhuongThucThanhToan</td>
                                 <td>
                                     @if (item.TrangThaiDon == "Đang giao" || item.TrangThaiDon == "Chờ xử lý")
@@ -82,6 +102,9 @@
                                     }
                                 </td>
                                 <td>
+                                    <button type="button" class="btn btn-info btn-sm text-white me-1 mb-1" data-bs-toggle="modal" data-bs-target="#detailModal-@item.MaDonHang">
+                                        <i class="fas fa-info-circle"></i> Chi tiết
+                                    </button>
                                     <form method="post" style="display:inline;">
                                         <button type="submit" asp-page-handler="Complete" asp-route-id="@item.MaDonHang" class="btn btn-success btn-sm">Hoàn thành</button>
                                     </form>
@@ -103,3 +126,56 @@
         </div>
     </div>
 </div>
+
+@if (Model.DonHangList != null && Model.DonHangList.Any())
+{
+    foreach (var item in Model.DonHangList)
+    {
+        <div class="modal fade" id="detailModal-@item.MaDonHang" tabindex="-1" aria-labelledby="detailModalLabel-@item.MaDonHang" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="detailModalLabel-@item.MaDonHang">
+                            <i class="fas fa-receipt me-2"></i> Chi tiết đơn hàng #@item.MaDonHang
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <p class="mb-1 text-muted">Thông tin người nhận:</p>
+                            <h6 class="fw-bold">SĐT: @item.SoDienThoaiNhan</h6>
+                            <p class="mb-1"><strong>Địa chỉ:</strong> @item.DiaChiGiaoHang</p>
+                        </div>
+                        <hr />
+                        <div class="mb-3">
+                            <p class="mb-1 text-muted">Thông tin thanh toán:</p>
+                            <div class="d-flex justify-content-between">
+                                <span>Tổng tiền hàng:</span>
+                                <span class="fw-bold">@item.TongTienHang.ToString("N0") đ</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span>Phí vận chuyển:</span>
+                                <span class="fw-bold">@item.PhiShip.ToString("N0") đ</span>
+                            </div>
+                            <div class="d-flex justify-content-between text-success mt-2 border-top pt-2">
+                                <span class="fw-bold">Tổng thanh toán (COD):</span>
+                                <span class="fw-bold fs-5">@item.TongThanhToan.ToString("N0") đ</span>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <span class="text-muted">Phương thức thanh toán:</span> 
+                            <span class="badge bg-secondary">@item.PhuongThucThanhToan</span>
+                        </div>
+                        <div class="mb-2">
+                            <span class="text-muted">Trạng thái hiện tại:</span> 
+                            <span class="badge bg-info text-dark">@item.TrangThaiDon</span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Đóng</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
