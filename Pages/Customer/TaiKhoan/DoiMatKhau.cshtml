@@ -1,0 +1,88 @@
+@page
+@* @model FreshGo.Pages.Customer.TaiKhoan.DoiMatKhauModel *@
+@{
+    ViewData["Title"] = "Đổi Mật Khẩu";
+    Layout = "_CustomerLayout";
+}
+
+<div class="container py-5 mt-3">
+    <div class="row g-4">
+        <!-- CỘT TRÁI: MENU TÀI KHOẢN -->
+        <div class="col-lg-3">
+            <div class="d-flex align-items-center gap-3 mb-4 px-2">
+                <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center fw-bold fs-4 shadow-sm" style="width: 50px; height: 50px;">
+                    TK
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-0 text-dark">Khách Trần B</h6>
+                    <span class="text-muted small"><i class="bi bi-pencil-square"></i> Sửa hồ sơ</span>
+                </div>
+            </div>
+            
+            <div class="list-group border-0 shadow-sm rounded-4 overflow-hidden">
+                <a asp-page="/Customer/TaiKhoan/HoSo" class="list-group-item list-group-item-action py-3 fw-medium text-dark">
+                    <i class="bi bi-person-circle me-2"></i> Hồ sơ của tôi
+                </a>
+                <a asp-page="/Customer/TaiKhoan/DoiMatKhau" class="list-group-item list-group-item-action active bg-success border-success py-3 fw-medium">
+                    <i class="bi bi-shield-lock me-2"></i> Đổi mật khẩu
+                </a>
+                <a href="#" class="list-group-item list-group-item-action py-3 fw-medium text-dark">
+                    <i class="bi bi-receipt me-2"></i> Đơn mua của tôi
+                </a>
+            </div>
+        </div>
+
+        <!-- CỘT PHẢI: NỘI DUNG ĐỔI MẬT KHẨU -->
+        <div class="col-lg-9">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-white border-bottom p-4 rounded-top-4">
+                    <h5 class="fw-black m-0" style="font-weight: 800;">Đổi Mật Khẩu</h5>
+                    <p class="text-muted m-0 mt-1">Để bảo mật tài khoản, vui lòng không chia sẻ mật khẩu cho người khác</p>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <form method="post">
+                        
+                        <div class="row mb-4 align-items-center">
+                            <label class="col-sm-4 col-md-3 col-form-label fw-semibold text-muted text-sm-end">Mật khẩu hiện tại</label>
+                            <div class="col-sm-8 col-md-7">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-success-subtle text-muted"><i class="bi bi-key-fill"></i></span>
+                                    <input type="password" class="form-control shadow-none border-success-subtle" placeholder="Nhập mật khẩu hiện tại" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4 align-items-center">
+                            <label class="col-sm-4 col-md-3 col-form-label fw-semibold text-muted text-sm-end">Mật khẩu mới</label>
+                            <div class="col-sm-8 col-md-7">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-success-subtle text-muted"><i class="bi bi-lock-fill"></i></span>
+                                    <input type="password" class="form-control shadow-none border-success-subtle" placeholder="Nhập mật khẩu mới" required>
+                                </div>
+                                <div class="form-text text-muted small">Mật khẩu phải dài từ 6 ký tự, bao gồm chữ và số.</div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-5 align-items-center">
+                            <label class="col-sm-4 col-md-3 col-form-label fw-semibold text-muted text-sm-end">Xác nhận mật khẩu</label>
+                            <div class="col-sm-8 col-md-7">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-success-subtle text-muted"><i class="bi bi-check-circle-fill"></i></span>
+                                    <input type="password" class="form-control shadow-none border-success-subtle" placeholder="Nhập lại mật khẩu mới" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-8 offset-sm-4 col-md-7 offset-md-3">
+                                <button type="submit" class="btn btn-success px-5 py-2 rounded-pill fw-bold shadow-sm">
+                                    CẬP NHẬT MẬT KHẨU
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

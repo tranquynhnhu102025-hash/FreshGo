@@ -1,0 +1,65 @@
+/* --- RESET & GLOBAL STYLES CHO FRESHGO --- */
+body {
+    background-color: #f8fafc;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #1f2937;
+}
+
+/* --- BANNER CHÍNH --- */
+.rounded-4 {
+    border-radius: 1.25rem !important;
+}
+
+/* --- THANH MENU DANH MỤC NGANG (PILL) --- */
+.scrollbar-none::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* --- CARD SẢN PHẨM HIỆN ĐẠI --- */
+.cus-product-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid #e2e8f0 !important;
+    background-color: #ffffff;
+}
+
+.cus-product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 25px -5px rgba(16, 185, 129, 0.15), 0 8px 10px -6px rgba(16, 185, 129, 0.1) !important;
+    border-color: #10b981 !important;
+}
+
+/* --- KHUNG ẢNH SẢN PHẨM --- */
+.cus-img-box {
+    position: relative;
+    width: 100%;
+    background-color: #f1f5f9;
+    overflow: hidden;
+    border-top-left-radius: 1.25rem;
+    border-top-right-radius: 1.25rem;
+}
+
+.cus-img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.cus-product-card:hover .cus-img-box img {
+    transform: scale(1.05); /* Hiệu ứng phóng to nhẹ ảnh khi rê chuột */
+}
+
+/* --- NÚT BẤM MUA HÀNG --- */
+.btn-success {
+    background-color: #10b981 !important;
+    border-color: #10b981 !important;
+}
+
+.btn-success:hover {
+    background-color: #059669 !important;
+    border-color: #059669 !important;
+}

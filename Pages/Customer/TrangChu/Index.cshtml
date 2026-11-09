@@ -1,0 +1,127 @@
+﻿@page
+@model FreshGo.Pages.Customer.TrangChu.IndexModel
+@{
+    ViewData["Title"] = "Trang Chủ - Nông Sản FreshGo";
+    Layout = "_CustomerLayout";
+}
+
+<style>
+    .hero-section {
+        background: url('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+        border-radius: 24px; min-height: 380px; position: relative;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .hero-overlay {
+        position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(16, 185, 129, 0.7));
+        border-radius: 24px;
+    }
+    .modern-card { background: #fff; border: none; border-radius: 20px; overflow: hidden; transition: transform 0.3s; }
+    .modern-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px -5px rgba(16, 185, 129, 0.15); }
+    .modern-img-wrapper { position: relative; height: 180px; }
+    .modern-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+    .modern-img-overlay {
+        position: absolute; bottom: 0; left: 0; right: 0; padding: 40px 15px 15px;
+        background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%); color: white;
+    }
+</style>
+
+<div class="container-fluid px-lg-5 pb-5">
+    
+    <div class="hero-section mt-3 mb-5 mx-2">
+        <div class="hero-overlay"></div>
+        <div class="position-relative z-1 text-center w-100 px-3">
+            <h1 class="display-4 fw-black text-white mb-4" style="font-weight: 900;">TƯƠI NGON MỖI NGÀY</h1>
+            <form method="get" class="mx-auto" style="max-width: 700px;">
+                <div class="input-group input-group-lg bg-white p-2 rounded-pill shadow-lg">
+                    <span class="input-group-text bg-transparent border-0 fs-4 text-success ps-4"><i class="bi bi-search"></i></span>
+                    <input type="text" asp-for="SearchKeyword" class="form-control border-0 shadow-none fs-5 bg-transparent" placeholder="Tìm rau củ, thịt cá...">
+                    <button class="btn btn-success rounded-pill px-5 fw-bold fs-5" type="submit">Tìm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+<!-- ĐÂY LÀ GIAO DIÊN BỘ LỌC DANH MỤC BẠN CẦN -->
+    <div class="mb-5 px-3">
+        <h4 class="fw-bold mb-3" style="font-weight: 800;">Lọc Theo Danh Mục</h4>
+        <div class="d-flex gap-3 overflow-auto pb-2" style="flex-wrap: nowrap;">
+            <!-- Nút Tất cả -->
+            <a asp-page="./Index" class="btn @(Model.CategoryId == null ? "btn-success" : "btn-outline-success border-2") rounded-pill px-4 py-2 fw-bold d-flex align-items-center gap-2 shadow-sm" style="white-space: nowrap;">
+                <i class="bi bi-grid-fill"></i> Tất cả
+            </a>
+            
+            <!-- Danh sách lấy từ SQL -->
+            @if (Model.DanhMucs != null && Model.DanhMucs.Any())
+            {
+                foreach (var dm in Model.DanhMucs)
+                {
+                    <a asp-page="./Index" asp-route-CategoryId="@dm.Id" class="btn @(Model.CategoryId == dm.Id ? "btn-success" : "btn-outline-success border-2") rounded-pill px-4 py-2 fw-bold d-flex align-items-center gap-2 shadow-sm" style="white-space: nowrap;">
+                        <i class="bi bi-tag-fill"></i> @dm.TenDanhMuc
+                    </a>
+                }
+            }
+        </div>
+    </div>
+    <div class="px-3">
+        <h2 class="fw-black mb-4" style="font-weight: 800;">Sản Phẩm Của Chúng Tôi</h2>
+        <div class="row g-4">
+            @if (Model.SanPhams != null && Model.SanPhams.Any())
+            {
+                @foreach (var sp in Model.SanPhams)
+                {
+                    <div class="col-6 col-md-3 col-lg-2">
+                        <div class="modern-card shadow-sm border border-light h-100 d-flex flex-column">
+                            <div class="modern-img-wrapper">
+                                <img src="@(string.IsNullOrEmpty(sp.HinhAnh) ? "https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=600&q=80" : sp.HinhAnh)" alt="@sp.TenSanPham">
+                                <div class="modern-img-overlay p-2">
+                                    <h6 class="fw-bold text-truncate mb-1">@sp.TenSanPham</h6>
+                                    <span class="fs-6 fw-black text-warning">@string.Format("{0:N0}", sp.GiaBan)đ/Kg</span>
+                                </div>
+                            </div>
+                            
+                            <div class="p-2 bg-white mt-auto">
+                                <form method="post" asp-page-handler="AddToCart">
+                                    <input type="hidden" name="sanPhamId" value="@sp.Id" />
+                                    
+                                    <div class="input-group input-group-sm mb-2">
+                                        <span class="input-group-text bg-light text-muted" style="font-size: 0.75rem;">Số lượng (Kg)</span>
+                                        <input type="number" name="soLuong" class="form-control text-center fw-bold" value="1" min="1" required>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-success w-100 d-flex justify-content-center align-items-center gap-1 py-1" style="font-size: 0.85rem; border-radius: 8px;">
+                                        <i class="bi bi-cart-plus"></i> CHỌN MUA
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+<footer class="bg-dark text-white pt-5 pb-4 mt-5">
+    <div class="container text-md-left">
+        <div class="row text-md-left">
+            <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
+                <h5 class="text-uppercase mb-4 fw-bold text-warning">🌱 Nông Sản FreshGo</h5>
+                <p>Hệ thống cung cấp thực phẩm sạch, rau củ đạt chuẩn VietGAP và thịt cá tươi sống nhập mới mỗi ngày.</p>
+            </div>
+            <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
+                <h5 class="text-uppercase mb-4 fw-bold text-warning">Liên Hệ Gian Hàng</h5>
+                <p><i class="bi bi-house-door-fill me-2"></i> 12 Lê Lợi, Quận 1, TP. Hồ Chí Minh</p>
+                <p><i class="bi bi-telephone-fill me-2"></i> Hotline: 1900 6868 (24/7)</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+@if (TempData["ThongBao"] != null)
+{
+    <script>
+        window.onload = function() {
+            alert('@TempData["ThongBao"]');
+        };
+    </script>
+}
