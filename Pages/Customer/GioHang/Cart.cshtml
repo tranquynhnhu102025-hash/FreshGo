@@ -1,0 +1,126 @@
+@page
+@model FreshGo.Pages.Customer.GioHang.CartModel
+@{
+    ViewData["Title"] = "Giỏ Hàng Của Bạn";
+    Layout = "_CustomerLayout";
+}
+
+<div class="container py-4">
+    <div class="d-flex align-items-center gap-2 mb-4">
+        <h3 class="fw-black text-dark m-0">Giỏ Hàng</h3>
+        <span class="badge bg-success rounded-pill px-3 py-2 fs-6">@Model.Items.Count sản phẩm</span>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-0">
+                    <div class="d-none d-md-flex row align-items-center bg-light fw-bold text-muted p-3 border-bottom m-0 rounded-top-4">
+                        <div class="col-6">Sản phẩm</div>
+                        <div class="col-2 text-center">Đơn giá</div>
+                        <div class="col-2 text-center">Số lượng</div>
+                        <div class="col-2 text-end">Thành tiền</div>
+                    </div>
+
+                    @if (Model.Items != null && Model.Items.Any())
+                    {
+                        foreach (var item in Model.Items)
+                        {
+                            var sp = item.IdSanPhamNavigation; 
+                            var thanhTienItem = (sp?.GiaBan ?? 0) * (item.SoLuong ?? 0);
+
+                            <div class="row align-items-center p-3 border-bottom m-0 position-relative">
+                                <div class="col-12 col-md-6 d-flex align-items-center gap-3 mb-3 mb-md-0">
+                                    
+                                    <!-- NÚT XÓA (MOBILE) SỬ DỤNG @sp.Id -->
+                                    <form method="post" asp-page-handler="Delete" asp-route-sanPhamId="@sp.Id" class="position-absolute top-0 end-0 m-3 d-md-none">
+                                        <button type="submit" class="btn btn-sm text-danger border-0 p-0" onclick="return confirm('Bạn có chắc muốn bỏ sản phẩm này khỏi giỏ?');">
+                                            <i class="bi bi-trash fs-5"></i>
+                                        </button>
+                                    </form>
+                                    
+                                    <img src="@(string.IsNullOrEmpty(sp?.HinhAnh) ? "https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=150" : sp.HinhAnh)" 
+                                         class="rounded-3 object-fit-cover shadow-sm" style="width: 80px; height: 80px;" alt="@sp?.TenSanPham">
+                                    
+                                    <div>
+                                        <h6 class="fw-bold mb-1 text-dark">@sp?.TenSanPham</h6>
+                                        <span class="badge bg-light text-success border border-success border-opacity-25 small">ĐVT: Kg</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-4 col-md-2 text-md-center fw-semibold text-dark">
+                                    @string.Format("{0:N0}", sp?.GiaBan)đ
+                                </div>
+                                
+                                <div class="col-4 col-md-2 text-center">
+                                    <span class="fw-bold fs-5 text-dark bg-light px-3 py-1 rounded-3 border border-success border-opacity-25">
+                                        @(item.SoLuong ?? 0) Kg
+                                    </span>
+                                </div>
+                                
+                                <div class="col-4 col-md-2 text-end fw-bold text-success fs-6">
+                                    @string.Format("{0:N0}", thanhTienItem)đ
+                                </div>
+                                
+                                <!-- NÚT XÓA (DESKTOP) SỬ DỤNG @sp.Id -->
+                                <div class="position-absolute end-0 top-50 translate-middle-y d-none d-md-block" style="width: auto; right: -40px !important;">
+                                    <form method="post" asp-page-handler="Delete" asp-route-sanPhamId="@sp.Id">
+                                        <button type="submit" class="btn btn-light text-danger rounded-circle shadow-sm" style="width: 35px; height: 35px;" onclick="return confirm('Bạn có chắc muốn bỏ sản phẩm này khỏi giỏ?');">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="p-5 text-center bg-white rounded-bottom-4">
+                            <i class="bi bi-cart-x text-muted opacity-50" style="font-size: 4rem;"></i>
+                            <h5 class="fw-bold text-muted mt-3">Giỏ hàng đang trống</h5>
+                        </div>
+                    }
+                </div>
+            </div>
+            <a asp-page="/Customer/TrangChu/Index" class="btn btn-link text-success text-decoration-none fw-semibold mt-3 p-0">
+                <i class="bi bi-arrow-left me-1"></i> Tiếp tục mua hàng
+            </a>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 sticky-top" style="top: 100px;">
+                <h5 class="fw-bold mb-4 border-bottom pb-3">Tóm tắt đơn hàng</h5>
+                
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Tạm tính:</span>
+                    <span class="fw-semibold text-dark">@string.Format("{0:N0}", Model.Total)đ</span>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="text-muted">Phí giao hàng:</span>
+                    <span class="fw-semibold text-dark">Miễn phí</span>
+                </div>
+                
+                <div class="border-top pt-3 mb-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="fw-bold text-dark fs-5">Tổng tiền:</span>
+                        <span class="fw-black text-success fs-3">@string.Format("{0:N0}", Model.Total)đ</span>
+                    </div>
+                </div>
+
+                <button class="btn btn-success w-100 py-3 rounded-pill fw-bold fs-5 shadow-sm text-uppercase d-flex align-items-center justify-content-center gap-2">
+                    Tiến hành đặt hàng <i class="bi bi-arrow-right-circle-fill"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SCRIPT BẮT VÀ HIỂN THỊ THÔNG BÁO TỪ BACKEND -->
+@if (TempData["ThongBao"] != null)
+{
+    <script>
+        window.onload = function() {
+            alert('@TempData["ThongBao"]');
+        };
+    </script>
+}
