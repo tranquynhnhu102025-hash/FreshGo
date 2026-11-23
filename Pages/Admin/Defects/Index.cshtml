@@ -1,0 +1,7 @@
+@page
+@model FreshGo.Pages.Admin.Defects.IndexModel
+@{
+    ViewData["Title"] = "Kiểm soát hàng lỗi";
+}
+<div class="page-heading"><div><div class="eyebrow">PRODUCT QUALITY</div><h1 class="h2 fw-bold">Xác nhận hàng lỗi / hư</h1><p class="text-secondary mb-0">Kiểm tra báo cáo của các chi nhánh và ghi nhận xử lý tồn kho.</p></div></div>
+<div class="card dashboard-card"><div class="table-responsive"><table class="table align-middle mb-0"><thead><tr><th>Chi nhánh</th><th>Sản phẩm</th><th>Số lượng</th><th>Nguyên nhân</th><th>Minh chứng</th><th>Ngày báo</th><th>Trạng thái</th><th>Thao tác</th></tr></thead><tbody>@foreach (var d in Model.Defects) { <tr><td>@d.Branch?.Name</td><td class="fw-semibold">@d.Product?.Name</td><td>@d.Quantity</td><td>@d.Reason</td><td>@if (!string.IsNullOrWhiteSpace(d.ImageUrl)) { <a href="@d.ImageUrl" target="_blank" rel="noopener">Xem ảnh</a> } else { <span class="text-secondary">—</span> }</td><td>@d.CreatedAt.ToLocalTime().ToString("dd/MM/yy")</td><td><span class="status-pill">@d.Status</span></td><td>@if (d.Status == "Chờ xác nhận") { <div class="d-flex gap-1"><form method="post" asp-page-handler="Approve"><input type="hidden" name="id" value="@d.Id"/><button class="btn btn-sm btn-success">Xác nhận</button></form><form method="post" asp-page-handler="Reject"><input type="hidden" name="id" value="@d.Id"/><button class="btn btn-sm btn-outline-danger">Từ chối</button></form></div> }</td></tr> }</tbody></table></div></div>

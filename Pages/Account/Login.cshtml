@@ -1,0 +1,13 @@
+@page
+@model FreshGo.Pages.Account.LoginModel
+@{
+    ViewData["Title"] = "Đăng nhập";
+}
+<div class="row justify-content-center"><div class="col-md-6 col-lg-5"><div class="card auth-card"><div class="card-body p-4 p-lg-5"><div class="text-center mb-4"><div class="brand-mark brand-mark-lg">F</div><h1 class="h3 fw-bold mt-3">Đăng nhập FreshGo</h1><p class="text-secondary">Truy cập tài khoản của bạn</p></div>
+<form method="post"><input type="hidden" asp-for="ReturnUrl" /><div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+<div class="mb-3"><label asp-for="Input.Email" class="form-label">Email</label><input asp-for="Input.Email" class="form-control" placeholder="you@example.com" /><span asp-validation-for="Input.Email" class="text-danger small"></span></div>
+<div class="mb-3"><label asp-for="Input.Password" class="form-label">Mật khẩu</label><input asp-for="Input.Password" class="form-control" placeholder="Nhập mật khẩu" /><span asp-validation-for="Input.Password" class="text-danger small"></span></div>
+<div class="form-check mb-3"><input asp-for="Input.RememberMe" class="form-check-input" /><label asp-for="Input.RememberMe" class="form-check-label">Ghi nhớ đăng nhập</label></div>
+<button class="btn btn-success w-100 btn-lg" type="submit">Đăng nhập</button></form>
+</div></div></div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }
