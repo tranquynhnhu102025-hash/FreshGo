@@ -1,4 +1,351 @@
 ﻿@page
-@model MyApp.Namespace.IndexModel
+@model FreshGo.Pages.Shipper.IndexModel
 @{
+    Layout = null;
+    var activeTab = string.IsNullOrEmpty(Model.Tab) ? "cho-nhan" : Model.Tab;
 }
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cổng Giao Hàng Shipper - FreshGo</title>
+    <link rel="stylesheet" href="~/css/shipper.css" asp-append-version="true" />
+</head>
+<body>
+    <!-- Thanh điều hướng riêng của Shipper -->
+    <header class="sh-topbar">
+        <a asp-page="/Shipper/Index" class="sh-brand">
+            🚚 FreshGo Shipper
+            <span class="sh-brand-badge">Đồng bộ Khách hàng & Kho</span>
+        </a>
+
+        <nav class="sh-nav-links">
+            <a asp-page="/Customer/TrangChu/Index" target="_blank" class="sh-nav-item">🛒 Trang Khách hàng</a>
+            <a asp-page="/Customer/GioHang/Cart" target="_blank" class="sh-nav-item">🛍️ Giỏ hàng khách (@Model.SoMonTrongGioKhach)</a>
+            <a asp-page="/Customer/DonHang/LichSuMuaHang" target="_blank" class="sh-nav-item">📦 Đơn bên Khách</a>
+            <a asp-page="/Index" class="sh-nav-item">🏠 Cổng hệ thống</a>
+        </nav>
+    </header>
+
+    <div class="sh-wrap">
+        <!-- Banner thông tin Shipper -->
+        <div class="sh-hero">
+            <div class="sh-hero-info">
+                <h1>Xin chào tài xế, @Model.Shipper.HoTen 👋</h1>
+                <div class="sh-hero-meta">
+                    <span>🛵 Biển số: <strong>@Model.Shipper.BienSoXe</strong></span>
+                    <span>🏪 Trực thuộc: <strong>@Model.Shipper.TenChiNhanh</strong></span>
+                    <span>📞 @Model.Shipper.SoDienThoai</span>
+                </div>
+            </div>
+            <div class="sh-hero-actions">
+                <form method="post" asp-page-handler="ToggleTrangThai" asp-route-tab="@activeTab" style="margin:0;">
+                    <button type="submit" class="sh-status-btn @(Model.Shipper.SanSangNhanDon ? "sh-online" : "sh-offline")">
+                        @(Model.Shipper.SanSangNhanDon ? "🟢 Đang trực tuyến (Sẵn sàng)" : "🔴 Đang tạm nghỉ")
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Thanh đồng bộ Giỏ hàng Khách hàng -> Đơn Shipper -->
+        <div class="sh-sync-bar">
+            <div>
+                <div style="font-weight: 700; font-size: 14.5px; color: #0f172a;">
+                    🔗 Liên kết Giỏ hàng & Đơn hàng Khách hàng (FreshGoCustomerDB)
+                </div>
+                <div style="font-size: 13px; color: #475569; margin-top: 2px;">
+                    @if (Model.SoMonTrongGioKhach > 0)
+                    {
+                        <span>Khách đang có <strong>@Model.SoMonTrongGioKhach món</strong> trong giỏ: @string.Join(", ", Model.ChiTietGioKhach)</span>
+                    }
+                    else
+                    {
+                        <span>Mọi đơn hàng khách đặt từ Giỏ hàng sẽ tự động đổ về mục <strong>Đơn mới chờ nhận</strong> bên dưới.</span>
+                    }
+                </div>
+            </div>
+            <form method="post" asp-page-handler="TaoDonTuGioHang" style="margin:0;">
+                <button type="submit" class="sh-sync-btn">
+                    ⚡ Chốt giỏ khách thành đơn giao ngay
+                </button>
+            </form>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.ThongBao))
+        {
+            <div class="sh-alert">@Model.ThongBao</div>
+        }
+
+        <!-- 4 Thẻ thống kê -->
+        <div class="sh-kpi-grid">
+            <div class="sh-kpi">
+                <div class="sh-kpi-label">Đơn mới chờ nhận</div>
+                <div class="sh-kpi-val" style="color: #d97706;">@Model.DonChoNhan.Count đơn</div>
+            </div>
+            <div class="sh-kpi">
+                <div class="sh-kpi-label">Đơn đang đi giao</div>
+                <div class="sh-kpi-val" style="color: #059669;">@Model.DonDangGiao.Count đơn</div>
+            </div>
+            <div class="sh-kpi">
+                <div class="sh-kpi-label">Lịch sử đã hoàn thành</div>
+                <div class="sh-kpi-val">@Model.LichSuDon.Count đơn</div>
+            </div>
+            <div class="sh-kpi">
+                <div class="sh-kpi-label">Tiền COD cần đối soát</div>
+                <div class="sh-kpi-val" style="color: #dc2626;">@Model.TongTienCODChuaNop.ToString("N0")đ</div>
+            </div>
+        </div>
+
+        <!-- Tabs điều hướng -->
+        <div class="sh-tabs">
+            <a asp-page="/Shipper/Index" asp-route-tab="cho-nhan" class="sh-tab @(activeTab == "cho-nhan" ? "active" : "")">
+                📦 Đơn mới chờ nhận <span class="sh-badge-count">@Model.DonChoNhan.Count</span>
+            </a>
+            <a asp-page="/Shipper/Index" asp-route-tab="dang-giao" class="sh-tab @(activeTab == "dang-giao" ? "active" : "")">
+                🛵 Đơn đang giao <span class="sh-badge-count">@Model.DonDangGiao.Count</span>
+            </a>
+            <a asp-page="/Shipper/Index" asp-route-tab="lich-su" class="sh-tab @(activeTab == "lich-su" ? "active" : "")">
+                📋 Lịch sử & Đối soát COD <span class="sh-badge-count">@Model.LichSuDon.Count</span>
+            </a>
+        </div>
+
+        <!-- TAB 1: ĐƠN MỚI CHỜ NHẬN -->
+        @if (activeTab == "cho-nhan")
+        {
+            if (Model.DonChoNhan.Any())
+            {
+                <div class="sh-order-list">
+                    @foreach (var d in Model.DonChoNhan)
+                    {
+                        var prefix = d.NguonDb == "CUSTOMER" ? "KH" : "DH";
+                        <div class="sh-card">
+                            <div>
+                                <div class="sh-card-top">
+                                    <div class="sh-code">
+                                        #@prefix@d.MaDonHang.ToString("D3")
+                                        <span class="sh-source-tag @(d.NguonDb == "CUSTOMER" ? "sh-source-cus" : "sh-source-main")">
+                                            @(d.NguonDb == "CUSTOMER" ? "🛒 Đơn từ Khách hàng" : "🏪 Đơn từ Kho")
+                                        </span>
+                                    </div>
+                                    <span class="sh-pill sh-pill-cod">⏳ @d.TrangThaiDon</span>
+                                </div>
+
+                                <!-- Tiến trình trực quan -->
+                                <div class="sh-stepper">
+                                    <span class="sh-step done">① Khách đặt</span>
+                                    <span class="sh-step-line"></span>
+                                    <span class="sh-step">② Đang giao</span>
+                                    <span class="sh-step-line"></span>
+                                    <span class="sh-step">③ Hoàn tất</span>
+                                </div>
+
+                                <div class="sh-info-line">👤 <strong>Khách nhận:</strong> @d.TenKhachHang (@d.SoDienThoaiNhan)</div>
+                                <div class="sh-info-line">📍 <strong>Giao tới:</strong> @d.DiaChiGiaoHang</div>
+                                <div class="sh-info-line" style="font-size:12.5px; color:#64748b;">🕒 Đặt lúc: @d.NgayDat.ToString("dd/MM/yyyy HH:mm")</div>
+
+                                @if (d.DanhSachMon.Any())
+                                {
+                                    <div class="sh-items-box">
+                                        <strong>🛍️ Sản phẩm khách đặt:</strong> @string.Join(", ", d.DanhSachMon)
+                                    </div>
+                                }
+                            </div>
+
+                            <div>
+                                <div class="sh-money-row">
+                                    <span>Thu hộ (@d.PhuongThucThanhToan):</span>
+                                    <strong style="font-size:18px; color:#065f46;">@d.TongThanhToan.ToString("N0")đ</strong>
+                                </div>
+                                <form method="post" asp-page-handler="NhanDon">
+                                    <input type="hidden" name="maDonHang" value="@d.MaDonHang" />
+                                    <input type="hidden" name="nguonDb" value="@d.NguonDb" />
+                                    <button type="submit" class="sh-btn sh-btn-ok" style="width:100%; padding:12px;">
+                                        🚀 Nhận đơn & Bắt đầu giao
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="sh-empty">
+                    <h3>Chưa có đơn mới nào đang chờ nhận</h3>
+                    <p>Bấm nút <strong>"⚡ Chốt giỏ khách thành đơn giao ngay"</strong> phía trên để tạo đơn mới từ giỏ hàng khách.</p>
+                </div>
+            }
+        }
+
+        <!-- TAB 2: ĐƠN ĐANG GIAO -->
+        @if (activeTab == "dang-giao")
+        {
+            if (Model.DonDangGiao.Any())
+            {
+                <div class="sh-order-list">
+                    @foreach (var d in Model.DonDangGiao)
+                    {
+                        var prefix = d.NguonDb == "CUSTOMER" ? "KH" : "DH";
+                        var mapQuery = Uri.EscapeDataString(d.DiaChiGiaoHang + ", TP. Hồ Chí Minh");
+                        <div class="sh-card">
+                            <div>
+                                <div class="sh-card-top">
+                                    <div class="sh-code">
+                                        #@prefix@d.MaDonHang.ToString("D3")
+                                        <span class="sh-source-tag @(d.NguonDb == "CUSTOMER" ? "sh-source-cus" : "sh-source-main")">
+                                            @(d.NguonDb == "CUSTOMER" ? "🛒 Đơn từ Khách hàng" : "🏪 Đơn từ Kho")
+                                        </span>
+                                    </div>
+                                    <span class="sh-pill @(d.PhuongThucThanhToan == "COD" ? "sh-pill-cod" : "sh-pill-paid")">
+                                        @(d.PhuongThucThanhToan == "COD" ? "💵 Thu hộ COD" : "✅ Đã thanh toán")
+                                    </span>
+                                </div>
+
+                                <!-- Tiến trình trực quan -->
+                                <div class="sh-stepper">
+                                    <span class="sh-step done">① Khách đặt</span>
+                                    <span class="sh-step-line done"></span>
+                                    <span class="sh-step done">② Đang giao</span>
+                                    <span class="sh-step-line"></span>
+                                    <span class="sh-step">③ Hoàn tất</span>
+                                </div>
+
+                                <div class="sh-info-line">👤 <strong>@d.TenKhachHang</strong> — <a href="tel:@d.SoDienThoaiNhan" style="color:#059669; font-weight:700;">📞 @d.SoDienThoaiNhan</a></div>
+                                <div class="sh-info-line">📍 <strong>Giao tới:</strong> @d.DiaChiGiaoHang</div>
+
+                                @if (d.DanhSachMon.Any())
+                                {
+                                    <div class="sh-items-box">
+                                        <strong>🛍️ Hàng cần giao:</strong> @string.Join(", ", d.DanhSachMon)
+                                    </div>
+                                }
+                            </div>
+
+                            <div>
+                                <div class="sh-money-row">
+                                    <span>@(d.PhuongThucThanhToan == "COD" ? "Cần thu khách:" : "Khách đã trả:")</span>
+                                    <strong style="font-size:18px; color:#065f46;">@d.TongThanhToan.ToString("N0")đ</strong>
+                                </div>
+
+                                <div class="sh-btn-row">
+                                    <a href="https://www.google.com/maps/search/?api=1&query=@mapQuery" target="_blank" class="sh-btn sh-btn-map">
+                                        🗺️ Bản đồ
+                                    </a>
+
+                                    <form method="post" asp-page-handler="HoanTatDon" style="flex:1; display:flex;">
+                                        <input type="hidden" name="maDonHang" value="@d.MaDonHang" />
+                                        <input type="hidden" name="nguonDb" value="@d.NguonDb" />
+                                        <button type="submit" class="sh-btn sh-btn-ok">✅ Đã giao xong</button>
+                                    </form>
+
+                                    <button type="button" class="sh-btn sh-btn-fail" onclick="toggleFailBox('@d.NguonDb-@d.MaDonHang')">
+                                        ❌ Thất bại
+                                    </button>
+                                </div>
+
+                                <div id="fail-box-@d.NguonDb-@d.MaDonHang" class="sh-fail-box">
+                                    <form method="post" asp-page-handler="ThatBaiDon">
+                                        <input type="hidden" name="maDonHang" value="@d.MaDonHang" />
+                                        <input type="hidden" name="nguonDb" value="@d.NguonDb" />
+                                        <select name="lyDo" class="sh-fail-select">
+                                            <option value="Khách hàng không nghe máy nhiều lần.">Khách hàng không nghe máy nhiều lần</option>
+                                            <option value="Địa chỉ giao hàng không chính xác.">Địa chỉ giao hàng không chính xác</option>
+                                            <option value="Khách hàng từ chối nhận hàng.">Khách hàng từ chối nhận hàng</option>
+                                        </select>
+                                        <button type="submit" class="sh-btn sh-btn-fail" style="width:100%; background:#dc2626; color:#fff;">
+                                            Xác nhận hủy đơn này
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="sh-empty">
+                    <h3>Hiện không có đơn nào đang giao</h3>
+                    <p>Chuyển sang tab <strong>"Đơn mới chờ nhận"</strong> để nhận chuyến giao hàng.</p>
+                </div>
+            }
+        }
+
+        <!-- TAB 3: LỊCH SỬ & ĐỐI SOÁT COD -->
+        @if (activeTab == "lich-su")
+        {
+            if (Model.TongTienCODChuaNop > 0)
+            {
+                <div style="background:#fffbeb; border:1px solid #fcd34d; padding:16px 20px; border-radius:16px; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:12px; margin-bottom:20px;">
+                    <div>
+                        <div style="font-weight:700; color:#92400e;">💰 Tiền thu hộ COD chưa đối soát: @Model.TongTienCODChuaNop.ToString("N0")đ</div>
+                        <div style="font-size:13px; color:#b45309;">Bấm xác nhận sau khi nộp tiền mặt lại cho chi nhánh @Model.Shipper.TenChiNhanh.</div>
+                    </div>
+                    <form method="post" asp-page-handler="DoiSoatCod" style="margin:0;">
+                        <button type="submit" class="sh-btn sh-btn-ok">✅ Đối soát COD ngay</button>
+                    </form>
+                </div>
+            }
+
+            <div class="sh-order-list">
+                @foreach (var d in Model.LichSuDon)
+                {
+                    var prefix = d.NguonDb == "CUSTOMER" ? "KH" : "DH";
+                    var isSuccess = d.TrangThaiDon.Contains("Hoàn") || d.TrangThaiDon.Contains("Đã giao");
+                    <div class="sh-card">
+                        <div>
+                            <div class="sh-card-top">
+                                <div class="sh-code">
+                                    #@prefix@d.MaDonHang.ToString("D3")
+                                    <span class="sh-source-tag @(d.NguonDb == "CUSTOMER" ? "sh-source-cus" : "sh-source-main")">
+                                        @(d.NguonDb == "CUSTOMER" ? "🛒 Đơn từ Khách hàng" : "🏪 Đơn từ Kho")
+                                    </span>
+                                </div>
+                                @if (isSuccess)
+                                {
+                                    <span class="sh-pill sh-pill-paid">✅ @d.TrangThaiDon</span>
+                                }
+                                else
+                                {
+                                    <span class="sh-pill sh-pill-cancel">❌ @d.TrangThaiDon</span>
+                                }
+                            </div>
+
+                            <div class="sh-stepper">
+                                <span class="sh-step done">① Khách đặt</span>
+                                <span class="sh-step-line done"></span>
+                                <span class="sh-step done">② Đang giao</span>
+                                <span class="sh-step-line @(isSuccess ? "done" : "")"></span>
+                                <span class="sh-step @(isSuccess ? "done" : "")">@(isSuccess ? "③ Hoàn tất" : "✕ Đã hủy")</span>
+                            </div>
+
+                            <div class="sh-info-line">👤 <strong>@d.TenKhachHang</strong> — @d.SoDienThoaiNhan</div>
+                            <div class="sh-info-line">📍 @d.DiaChiGiaoHang</div>
+                            @if (d.DanhSachMon.Any())
+                            {
+                                <div class="sh-items-box">
+                                    <strong>🛍️ Sản phẩm:</strong> @string.Join(", ", d.DanhSachMon)
+                                </div>
+                            }
+                        </div>
+
+                        <div class="sh-money-row" style="margin-bottom:0;">
+                            <span>Tổng đơn: <strong>@d.TongThanhToan.ToString("N0")đ</strong></span>
+                            <span style="font-size:12.5px; font-weight:700; color:#059669;">@d.PhuongThucThanhToan</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    <script>
+        function toggleFailBox(key) {
+            const el = document.getElementById('fail-box-' + key);
+            if (!el) return;
+            el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+        }
+    </script>
+</body>
+</html>

@@ -9,21 +9,14 @@ namespace FreshGo.Models
         public DbSet<SanPham> SanPhams { get; set; }
         public DbSet<DanhMuc> DanhMucs { get; set; }
         public DbSet<GioHang> GioHangs { get; set; }
+        public DbSet<Voucher> Vouchers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder b)
         {
-            b.Entity<SanPham>(e =>
-            {
-                e.ToTable("SanPham");
-                e.Property(x => x.Id).HasColumnName("ID");
-                e.Property(x => x.IdDanhMuc).HasColumnName("ID_DanhMuc");
-            });
-            b.Entity<DanhMuc>(e =>
-            {
-                e.ToTable("DanhMuc");
-                e.Property(x => x.Id).HasColumnName("ID");
-            });
-            b.Entity<GioHang>(e =>
+            b.Entity<SanPham>(e => { e.ToTable("SanPham"); e.HasKey(x => x.Id); });
+            b.Entity<DanhMuc>(e => { e.ToTable("DanhMuc"); e.HasKey(x => x.Id); });
+            b.Entity<Voucher>(e => { e.ToTable("Voucher"); e.HasKey(x => x.Id); });
+            b.Entity<GioHang>(e =>        
             {
                 e.ToTable("GioHang");
                 e.HasKey(x => new { x.IdKhachHang, x.IdSanPham });

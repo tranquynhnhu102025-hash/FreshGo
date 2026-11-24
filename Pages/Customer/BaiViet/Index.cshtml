@@ -1,0 +1,99 @@
+@page
+@model FreshGo.Pages.Customer.BaiViet.IndexModel
+@{
+    ViewData["Title"] = "Cẩm nang & Bài viết - FreshGo";
+    var danhMucList = new[] { "Tất cả", "Mẹo chọn đồ tươi", "Công thức món ngon", "Dinh dưỡng sạch" };
+    var activeTab = string.IsNullOrEmpty(Model.ChuyenMuc) ? "Tất cả" : Model.ChuyenMuc;
+}
+
+<div class="container py-4">
+    <!-- Header Cẩm nang -->
+    <div class="text-center mb-4">
+        <span class="badge bg-success bg-opacity-10 text-success fw-semibold px-3 py-2 rounded-pill mb-2">
+            🌿 CẨM NANG SỐNG XANH FRESHGO
+        </span>
+        <h1 class="fw-bold text-dark">Góc Bếp & Kiến Thức Thực Phẩm Sạch</h1>
+        <p class="text-muted mx-auto" style="max-width: 620px;">
+            Chia sẻ bí quyết chọn nông sản tươi ngon mỗi ngày, công thức nấu ăn chuẩn vị và thực đơn dinh dưỡng cho cả gia đình.
+        </p>
+    </div>
+
+    <!-- Bộ lọc chuyên mục -->
+    <div class="d-flex flex-wrap justify-content-center gap-2 mb-5">
+        @foreach (var dm in danhMucList)
+        {
+            var isActive = activeTab == dm;
+            <a asp-page="/Customer/BaiViet/Index"
+               asp-route-ChuyenMuc="@dm"
+               class="btn rounded-pill px-4 fw-semibold @(isActive ? "btn-success shadow-sm" : "btn-outline-success")">
+                @dm
+            </a>
+        }
+    </div>
+
+    <!-- Bài viết nổi bật (chỉ hiện ở tab Tất cả) -->
+    @if (activeTab == "Tất cả" && Model.BaiNoiBat != null)
+    {
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-5">
+            <div class="row g-0">
+                <div class="col-lg-6">
+                    <img src="@Model.BaiNoiBat.HinhAnh"
+                         alt="@Model.BaiNoiBat.TieuDe"
+                         class="w-100 h-100"
+                         style="min-height: 300px; object-fit: cover;">
+                </div>
+                <div class="col-lg-6 p-4 p-lg-5 d-flex flex-column justify-content-center bg-white">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <span class="badge bg-warning text-dark">⭐ Nổi bật</span>
+                        <span class="badge bg-success bg-opacity-10 text-success">@Model.BaiNoiBat.ChuyenMuc</span>
+                    </div>
+                    <h2 class="fw-bold mb-3">@Model.BaiNoiBat.TieuDe</h2>
+                    <p class="text-muted mb-4">@Model.BaiNoiBat.TomTat</p>
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <small class="text-muted">✍️ @Model.BaiNoiBat.TacGia • @Model.BaiNoiBat.NgayDang</small>
+                        <a asp-page="/Customer/BaiViet/ChiTiet"
+                           asp-route-id="@Model.BaiNoiBat.Id"
+                           class="btn btn-success rounded-pill px-4 fw-semibold">
+                            Đọc tiếp →
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Danh sách thẻ bài viết -->
+    <div class="row g-4">
+        @foreach (var bv in Model.DanhSachBaiViet)
+        {
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
+                    <div class="position-relative">
+                        <img src="@bv.HinhAnh"
+                             class="card-img-top"
+                             alt="@bv.TieuDe"
+                             style="height: 210px; object-fit: cover;">
+                        <span class="badge bg-success position-absolute top-0 start-0 m-3 rounded-pill">
+                            @bv.ChuyenMuc
+                        </span>
+                    </div>
+                    <div class="card-body d-flex flex-column p-4">
+                        <div class="text-muted small mb-2">
+                            📅 @bv.NgayDang • ⏱️ @bv.PhutDoc phút đọc
+                        </div>
+                        <h5 class="fw-bold mb-2">@bv.TieuDe</h5>
+                        <p class="text-muted small mb-4">@bv.TomTat</p>
+                        <div class="mt-auto pt-3 border-top d-flex justify-content-between align-items-center">
+                            <span class="small fw-semibold text-secondary">@bv.TacGia</span>
+                            <a asp-page="/Customer/BaiViet/ChiTiet"
+                               asp-route-id="@bv.Id"
+                               class="btn btn-outline-success btn-sm rounded-pill px-3 fw-semibold">
+                                Xem chi tiết
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

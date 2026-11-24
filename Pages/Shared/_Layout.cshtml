@@ -42,9 +42,9 @@
             <!-- MENU ĐIỀU HƯỚNG -->
             <nav class="hidden md:flex items-center gap-8 text-sm font-bold text-gray-600">
                 <a asp-page="/Index" class="hover:text-freshgo transition-colors">Trang chủ</a>
-                <a asp-page="/CuaHang" class="hover:text-freshgo transition-colors">Cửa hàng</a>
-                <a asp-page="/KhuyenMai" class="hover:text-freshgo transition-colors">Khuyến mãi</a>
-                <a asp-page="/BaiViet" class="hover:text-freshgo transition-colors">Bài viết</a>
+                <a asp-page="/Customer/TrangChu/Index" class="hover:text-freshgo transition-colors">Cửa hàng</a>
+                <a asp-page="/Customer/KhuyenMai/Index" class="hover:text-freshgo transition-colors">Khuyến mãi</a>
+                <a asp-page="/Customer/BaiViet/Index" class="hover:text-freshgo transition-colors">Bài viết</a>
             </nav>
 
             <!-- Thanh tìm kiếm -->
@@ -57,13 +57,13 @@
 
             <!-- Nút chức năng -->
             <div class="flex items-center gap-3">
-                <a asp-page="/Manager/Index" class="hidden sm:flex items-center gap-1 text-sm font-bold text-gray-400 hover:text-freshgo transition-colors" title="Quản lý">
+                <a asp-page="/CaiDat" class="hidden sm:flex items-center gap-1 text-sm font-bold text-gray-400 hover:text-freshgo transition-colors" title="Quản lý">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                 </a>
                 
-                <a asp-page="/GioHang" class="relative p-2 bg-emerald-50 rounded-full text-freshgo hover:bg-freshgo hover:text-white transition-all">
+                <a asp-page="/Customer/GioHang/Cart" class="relative p-2 bg-emerald-50 rounded-full text-freshgo hover:bg-freshgo hover:text-white transition-all">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-                    <span class="absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white shadow-sm">3</span>
+                    <span class="absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white shadow-sm">0</span>
                 </a>
                 
                 <a asp-page="/DangNhap" class="bg-gray-800 text-white text-sm font-bold py-2.5 px-6 rounded-full hover:bg-freshgo transition-colors shadow-md whitespace-nowrap">Đăng nhập</a>

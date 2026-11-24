@@ -1,0 +1,310 @@
+@page
+@model FreshGo.Pages.Customer.GioHang.ThanhToanModel
+@{
+    ViewData["Title"] = "Xác nhận đặt hàng - FreshGo";
+}
+
+<style>
+    .co-wrap {
+        max-width: 1140px;
+        margin: 28px auto 60px;
+        padding: 0 20px;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+    .co-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 24px;
+    }
+    .co-title {
+        font-size: 26px;
+        font-weight: 800;
+        color: #1e293b;
+        margin: 0;
+    }
+    .co-back {
+        text-decoration: none;
+        color: #059669;
+        font-weight: 700;
+        font-size: 14px;
+        padding: 8px 16px;
+        border-radius: 999px;
+        background: #ecfdf5;
+    }
+    .co-grid {
+        display: grid;
+        grid-template-columns: 1.45fr 1fr;
+        gap: 24px;
+        align-items: start;
+    }
+    @@media (max-width: 860px) {
+        .co-grid { grid-template-columns: 1fr; }
+    }
+    .co-card {
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 26px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+    }
+    .co-section-title {
+        font-size: 18px;
+        font-weight: 800;
+        color: #065f46;
+        margin: 0 0 18px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .co-row-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+    @@media (max-width: 600px) {
+        .co-row-2 { grid-template-columns: 1fr; }
+    }
+    .co-group {
+        margin-bottom: 16px;
+    }
+    .co-label {
+        display: block;
+        font-weight: 700;
+        font-size: 13.5px;
+        color: #334155;
+        margin-bottom: 6px;
+    }
+    .co-input, .co-select, .co-textarea {
+        width: 100%;
+        padding: 11px 14px;
+        border-radius: 12px;
+        border: 1.5px solid #cbd5e1;
+        font-size: 14.5px;
+        color: #0f172a;
+        background: #f8fafc;
+        box-sizing: border-box;
+        transition: all 0.2s;
+    }
+    .co-input:focus, .co-select:focus, .co-textarea:focus {
+        outline: none;
+        border-color: #10b981;
+        background: #ffffff;
+    }
+    .co-pay-options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+    .co-pay-box {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 14px;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 14px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+        background: #f8fafc;
+    }
+    .co-pay-box input:checked + span {
+        color: #059669;
+        font-weight: 700;
+    }
+    .co-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px dashed #e2e8f0;
+    }
+    .co-item-img {
+        width: 50px;
+        height: 50px;
+        border-radius: 10px;
+        object-fit: cover;
+        background: #f1f5f9;
+    }
+    .co-sum-row {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 12px;
+        font-size: 14.5px;
+        color: #475569;
+    }
+    .co-total-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 16px;
+        padding-top: 14px;
+        border-top: 2px solid #e2e8f0;
+    }
+    .co-submit-btn {
+        width: 100%;
+        margin-top: 20px;
+        padding: 14px 20px;
+        border: none;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: 800;
+        cursor: pointer;
+        box-shadow: 0 6px 18px rgba(16, 185, 129, 0.3);
+        transition: transform 0.15s;
+    }
+    .co-submit-btn:hover {
+        transform: translateY(-1px);
+    }
+    .co-success-box {
+        background: #ffffff;
+        border-radius: 24px;
+        padding: 44px 28px;
+        text-align: center;
+        max-width: 640px;
+        margin: 20px auto;
+        border: 1px solid #a7f3d0;
+        box-shadow: 0 10px 30px rgba(16, 185, 129, 0.12);
+    }
+</style>
+
+<div class="co-wrap">
+    @if (Model.MaDonVuaDat.HasValue)
+    {
+        <div class="co-success-box">
+            <div style="font-size: 56px; margin-bottom: 12px;">🎉</div>
+            <h2 style="font-weight: 800; color: #065f46; margin-bottom: 8px;">
+                Đặt Hàng Thành Công! Mã Đơn #KH@(Model.MaDonVuaDat.Value.ToString("D3"))
+            </h2>
+            <p style="color: #475569; font-size: 15px; line-height: 1.6; margin-bottom: 24px;">
+                Đơn hàng giao tới <strong>@Model.HoTenNhan (@Model.SoDienThoai)</strong> tại địa chỉ
+                <strong>@Model.DiaChiChiTiet, @Model.KhuVuc</strong> đã được chuyển thẳng tới hệ thống điều phối <strong>Shipper FreshGo</strong>.
+            </p>
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;">
+                <a asp-page="/Shipper/Index" class="co-submit-btn" style="width: auto; margin: 0; text-decoration: none; padding: 12px 24px;">
+                    🚚 Mở Cổng Shipper để nhận giao đơn này
+                </a>
+                <a asp-page="/Customer/DonHang/LichSuMuaHang" class="co-back" style="padding: 12px 22px;">
+                    📦 Theo dõi đơn của tôi
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="co-header">
+            <h1 class="co-title">🚚 Thông Tin Giao Hàng & Đặt Đơn</h1>
+            <a asp-page="/Customer/GioHang/Cart" class="co-back">← Quay lại Giỏ hàng</a>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.ThongBaoLoi))
+        {
+            <div style="background:#fee2e2; color:#991b1b; padding:12px 18px; border-radius:12px; font-weight:600; margin-bottom:18px;">
+                ⚠️ @Model.ThongBaoLoi
+            </div>
+        }
+
+        <form method="post">
+            <div class="co-grid">
+                <!-- Cột trái: Form thông tin người nhận -->
+                <div class="co-card">
+                    <h2 class="co-section-title">📍 Địa Chỉ & Liên Hệ Người Nhận</h2>
+
+                    <div class="co-row-2">
+                        <div class="co-group">
+                            <label class="co-label">Họ và tên người nhận *</label>
+                            <input asp-for="HoTenNhan" class="co-input" placeholder="Nhập họ tên người nhận..." required />
+                        </div>
+                        <div class="co-group">
+                            <label class="co-label">Số điện thoại liên hệ *</label>
+                            <input asp-for="SoDienThoai" class="co-input" placeholder="Ví dụ: 0909 888 777" required />
+                        </div>
+                    </div>
+
+                    <div class="co-group">
+                        <label class="co-label">Khu vực giao hàng (TP. Hồ Chí Minh) *</label>
+                        <select asp-for="KhuVuc" class="co-select">
+                            <option value="Quận 12">Quận 12 (Gần kho FreshGo Quận 12)</option>
+                            <option value="Quận 1">Quận 1 (Gần kho FreshGo Quận 1)</option>
+                            <option value="Gò Vấp">Quận Gò Vấp (Gần kho FreshGo Gò Vấp)</option>
+                            <option value="Quận 7">Quận 7</option>
+                            <option value="Bình Thạnh">Quận Bình Thạnh</option>
+                            <option value="Tân Bình">Quận Tân Bình</option>
+                            <option value="TP. Thủ Đức">TP. Thủ Đức</option>
+                        </select>
+                    </div>
+
+                    <div class="co-group">
+                        <label class="co-label">Địa chỉ giao hàng chi tiết (Số nhà, tên đường, phường) *</label>
+                        <input asp-for="DiaChiChiTiet" class="co-input" placeholder="Số nhà, tên đường, phường..." required />
+                    </div>
+
+                    <div class="co-group">
+                        <label class="co-label">Ghi chú cho tài xế Shipper (Không bắt buộc)</label>
+                        <textarea asp-for="GhiChu" rows="2" class="co-textarea" placeholder="Ví dụ: Giao giờ hành chính, gọi điện trước khi tới cổng..."></textarea>
+                    </div>
+
+                    <div class="co-group" style="margin-bottom: 0;">
+                        <label class="co-label">Phương thức thanh toán</label>
+                        <div class="co-pay-options">
+                            <label class="co-pay-box">
+                                <input type="radio" asp-for="PhuongThucThanhToan" value="COD" checked />
+                                <span>💵 Tiền mặt khi nhận (COD)</span>
+                            </label>
+                            <label class="co-pay-box">
+                                <input type="radio" asp-for="PhuongThucThanhToan" value="Chuyển khoản" />
+                                <span>🏦 Chuyển khoản ngân hàng</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cột phải: Tóm tắt đơn hàng -->
+                <div class="co-card">
+                    <h2 class="co-section-title">🛒 Đơn Hàng Của Bạn (@Model.DanhSachSanPham.Sum(x => x.SoLuong) sản phẩm)</h2>
+
+                    @foreach (var item in Model.DanhSachSanPham)
+                    {
+                        <div class="co-item">
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                @if (!string.IsNullOrEmpty(item.HinhAnh))
+                                {
+                                    <img src="@item.HinhAnh" alt="@item.TenSanPham" class="co-item-img" />
+                                }
+                                <div>
+                                    <div style="font-weight:700; font-size:14px; color:#0f172a;">@item.TenSanPham</div>
+                                    <div style="font-size:12.5px; color:#64748b;">@item.GiaBan.ToString("N0")đ × @item.SoLuong @item.DonViTinh</div>
+                                </div>
+                            </div>
+                            <div style="font-weight:700; color:#059669; font-size:14.5px;">
+                                @item.ThanhTien.ToString("N0")đ
+                            </div>
+                        </div>
+                    }
+
+                    <div class="co-sum-row">
+                        <span>Tạm tính:</span>
+                        <strong>@Model.TamTinh.ToString("N0")đ</strong>
+                    </div>
+                    <div class="co-sum-row">
+                        <span>Phí giao hàng:</span>
+                        <strong style="color:#059669;">@(Model.PhiGiaoHang == 0 ? "Miễn phí" : Model.PhiGiaoHang.ToString("N0") + "đ")</strong>
+                    </div>
+
+                    <div class="co-total-row">
+                        <span style="font-weight:700; font-size:16px;">Tổng thanh toán:</span>
+                        <strong style="font-size:24px; color:#059669;">@Model.TongCong.ToString("N0")đ</strong>
+                    </div>
+
+                    <button type="submit" class="co-submit-btn">
+                        ✅ XÁC NHẬN ĐẶT HÀNG
+                    </button>
+                </div>
+            </div>
+        </form>
+    }
+</div>

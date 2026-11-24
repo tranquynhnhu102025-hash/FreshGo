@@ -1,0 +1,89 @@
+@page "{id:int?}"
+@model FreshGo.Pages.Customer.BaiViet.ChiTietModel
+@{
+    ViewData["Title"] = Model.BaiViet?.TieuDe ?? "Chi tiết bài viết";
+}
+
+@if (Model.BaiViet != null)
+{
+    <div class="container py-4">
+        <div class="mb-3">
+            <a asp-page="/Customer/BaiViet/Index" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                ← Quay lại danh sách bài viết
+            </a>
+        </div>
+
+        <div class="row g-4">
+            <!-- Cột nội dung bài viết -->
+            <div class="col-lg-8">
+                <article class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white">
+                    <div class="mb-3">
+                        <span class="badge bg-success rounded-pill px-3 py-2">@Model.BaiViet.ChuyenMuc</span>
+                    </div>
+                    <h1 class="fw-bold mb-3">@Model.BaiViet.TieuDe</h1>
+                    <div class="d-flex flex-wrap gap-3 text-muted small pb-3 mb-4 border-bottom">
+                        <span>✍️ Tác giả: <strong>@Model.BaiViet.TacGia</strong></span>
+                        <span>📅 Ngày đăng: @Model.BaiViet.NgayDang</span>
+                        <span>⏱️ @Model.BaiViet.PhutDoc phút đọc</span>
+                    </div>
+
+                    <img src="@Model.BaiViet.HinhAnh"
+                         alt="@Model.BaiViet.TieuDe"
+                         class="w-100 rounded-4 mb-4"
+                         style="max-height: 420px; object-fit: cover;">
+
+                    <p class="lead fw-semibold text-dark">@Model.BaiViet.TomTat</p>
+
+                    <div class="fs-6 lh-lg text-secondary">
+                        @Html.Raw(Model.BaiViet.NoiDung)
+                    </div>
+                </article>
+            </div>
+
+            <!-- Cột phải: Nguyên liệu gợi ý & Bài liên quan -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+                    <h5 class="fw-bold text-success mb-3">🛒 Nguyên Liệu Tươi Trong Bài</h5>
+                    @foreach (var sp in Model.NguyenLieuGoiY)
+                    {
+                        <div class="d-flex align-items-center gap-3 pb-3 mb-3 border-bottom">
+                            <img src="@sp.HinhAnh"
+                                 alt="@sp.TenSanPham"
+                                 class="rounded-3"
+                                 style="width: 56px; height: 56px; object-fit: cover;">
+                            <div class="flex-grow-1 overflow-hidden">
+                                <div class="fw-bold text-truncate small">@sp.TenSanPham</div>
+                                <div class="text-danger fw-bold small">@sp.GiaBan.ToString("N0")đ</div>
+                            </div>
+                            <form method="post" asp-page-handler="ThemGio">
+                                <input type="hidden" name="sanPhamId" value="@sp.Id" />
+                                <button type="submit" class="btn btn-success btn-sm rounded-pill px-3">
+                                    + Giỏ
+                                </button>
+                            </form>
+                        </div>
+                    }
+                </div>
+
+                <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+                    <h5 class="fw-bold mb-3">📰 Bài Viết Khác</h5>
+                    @foreach (var b in Model.BaiLienQuan)
+                    {
+                        <a asp-page="/Customer/BaiViet/ChiTiet"
+                           asp-route-id="@b.Id"
+                           class="d-flex gap-3 text-decoration-none text-dark mb-3 pb-3 border-bottom">
+                            <img src="@b.HinhAnh"
+                                 alt="@b.TieuDe"
+                                 class="rounded-3"
+                                 style="width: 72px; height: 56px; object-fit: cover;">
+                            <div>
+                                <div class="fw-semibold small line-clamp-2">@b.TieuDe</div>
+                                <small class="text-muted">@b.NgayDang</small>
+                            </div>
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
