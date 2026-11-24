@@ -20,3 +20,6 @@
 2. Mở phần mềm SQL Server Management Studio (SSMS).
 3. Mở file `FreshGo_Database.sql` và bấm `F5` (Execute) để tạo 8 bảng và dữ liệu mẫu.
 4. Mở thư mục project bằng VS Code hoặc Visual Studio 2022 và chạy lệnh `dotnet run` để bắt đầu code.
+
+## TRước Khi chạy 
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version 8.0.11
