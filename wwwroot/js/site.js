@@ -1,4 +1,9 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Write your JavaScript code.
+// Shared client-side behaviors for FreshGo.
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('[data-confirm]').forEach((button) => {
+    button.addEventListener('click', (event) => {
+      const message = button.getAttribute('data-confirm') || 'Bạn có chắc chắn muốn thực hiện thao tác này?';
+      if (!window.confirm(message)) event.preventDefault();
+    });
+  });
+});

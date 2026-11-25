@@ -1,0 +1,14 @@
+@page
+@model FreshGo.Pages.Admin.Products.IndexModel
+@{
+    ViewData["Title"] = "Quản lý sản phẩm";
+}
+<div class="page-heading"><div><div class="eyebrow">CATALOG MANAGEMENT</div><h1 class="h2 fw-bold">Quản lý sản phẩm</h1><p class="text-secondary mb-0">Tạo mới, cập nhật và ẩn sản phẩm trên toàn hệ thống.</p></div></div>
+<div class="row g-3"><div class="col-lg-4"><div class="card dashboard-card"><div class="card-header bg-white fw-bold">Thêm sản phẩm</div><div class="card-body"><form method="post" asp-page-handler="Create"><div asp-validation-summary="All" class="text-danger small"></div>
+<div class="mb-2"><label class="form-label">Tên sản phẩm</label><input asp-for="Input.Name" class="form-control" required /></div>
+<div class="mb-2"><label class="form-label">Danh mục</label><select asp-for="Input.CategoryId" asp-items="Model.CategoryOptions" class="form-select"></select></div>
+<div class="row"><div class="col-6 mb-2"><label class="form-label">Giá bán</label><input asp-for="Input.Price" type="number" min="0" step="1000" class="form-control" /></div><div class="col-6 mb-2"><label class="form-label">Giá vốn</label><input asp-for="Input.CostPrice" type="number" min="0" step="1000" class="form-control" /></div></div>
+<div class="row"><div class="col-6 mb-2"><label class="form-label">Đơn vị</label><input asp-for="Input.Unit" class="form-control" /></div><div class="col-6 mb-2"><label class="form-label">Ảnh (URL)</label><input asp-for="Input.ImageUrl" class="form-control" /></div></div>
+<div class="mb-3"><label class="form-label">Mô tả</label><textarea asp-for="Input.Description" class="form-control" rows="2"></textarea></div>
+<button class="btn btn-success w-100">+ Thêm sản phẩm</button></form></div></div></div>
+<div class="col-lg-8"><div class="card dashboard-card"><div class="card-header bg-white fw-bold">Danh sách sản phẩm (@Model.Products.Count)</div><div class="table-responsive"><table class="table align-middle"><thead><tr><th>Sản phẩm</th><th>Danh mục</th><th>Giá bán</th><th>Giá vốn</th><th>Trạng thái</th><th></th></tr></thead><tbody>@foreach (var p in Model.Products) { <tr><td><div class="fw-semibold">@p.Name</div><small class="text-secondary">@p.Unit</small></td><td>@p.Category?.Name</td><td>@p.Price.ToString("N0") đ</td><td>@p.CostPrice.ToString("N0") đ</td><td>@(p.IsActive ? "Đang bán" : "Đã ẩn")</td><td><form method="post" asp-page-handler="Toggle"><input type="hidden" name="id" value="@p.Id"/><button class="btn btn-sm btn-outline-secondary">@(p.IsActive ? "Ẩn" : "Hiện")</button></form></td></tr> }</tbody></table></div></div></div></div>
