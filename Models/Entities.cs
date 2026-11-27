@@ -190,7 +190,7 @@ public class DefectiveProduct
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }
 
-public class Voucher
+public class AdminVoucher
 {
     public int Id { get; set; }
     [Required, MaxLength(40)] public string Code { get; set; } = "";

@@ -1,23 +1,21 @@
 using FreshGo.Data;
 using FreshGo.Models;
-<<<<<<< HEAD
-=======
 using FreshGo.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
->>>>>>> admin
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Database cho phân hệ Admin (FreshGoAdminDB)
 builder.Services.AddDbContext<FreshGoDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AdminConnection")
+        ?? builder.Configuration.GetConnectionString("DefaultConnection")));
 
-<<<<<<< HEAD
-// Trỏ đúng sang database của phân hệ Khách hàng
+// Database cho phân hệ Khách hàng (FreshGoCustomerDB)
 builder.Services.AddDbContext<FreshGoContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("CustomerConnection")
         ?? @"Server=localhost\SQLEXPRESS;Database=FreshGoCustomerDB;Trusted_Connection=True;TrustServerCertificate=True;"));
-=======
+
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     options.Password.RequiredLength = 8;
@@ -58,7 +56,6 @@ builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AuthorizeFolder("/Admin", "AdminOnly");
 });
->>>>>>> admin
 
 var app = builder.Build();
 

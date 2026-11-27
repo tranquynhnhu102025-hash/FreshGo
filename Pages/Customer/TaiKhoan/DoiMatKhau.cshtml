@@ -1,88 +1,179 @@
 @page
 @* @model FreshGo.Pages.Customer.TaiKhoan.DoiMatKhauModel *@
 @{
-    ViewData["Title"] = "Đổi Mật Khẩu";
-    Layout = "_CustomerLayout";
+    ViewData["Title"] = "Đổi Mật Khẩu - FreshGo";
 }
 
-<div class="container py-5 mt-3">
-    <div class="row g-4">
-        <!-- CỘT TRÁI: MENU TÀI KHOẢN -->
-        <div class="col-lg-3">
-            <div class="d-flex align-items-center gap-3 mb-4 px-2">
-                <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center fw-bold fs-4 shadow-sm" style="width: 50px; height: 50px;">
-                    TK
+<style>
+    .om-wrap, .om-wrap * { box-sizing: border-box; }
+    .om-wrap {
+        width: 100%;
+        max-width: 100%;
+        margin: 8px 0 40px;
+        display: grid;
+        grid-template-columns: 250px minmax(0, 1fr);
+        gap: 24px;
+        align-items: start;
+    }
+    @@media (max-width: 860px) { .om-wrap { grid-template-columns: 1fr; } }
+
+    .om-side {
+        background: #fff;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    }
+    .om-main {
+        background: #fff;
+        border-radius: 16px;
+        padding: 26px 28px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+        min-width: 0;
+    }
+    .om-avatar {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: #198754;
+        color: #fff;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        flex-shrink: 0;
+    }
+    .om-menu-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 11px 14px;
+        border-radius: 10px;
+        text-decoration: none;
+        color: #334155;
+        font-weight: 600;
+        font-size: 14px;
+        margin-top: 6px;
+        transition: background .15s;
+    }
+    .om-menu-item:hover { background: #f1f5f9; color: #198754; }
+    .om-menu-item.active { background: #198754; color: #fff; }
+
+    .pwd-form {
+        margin-top: 24px;
+        padding-top: 24px;
+        border-top: 1px solid #f1f5f9;
+        max-width: 580px;
+    }
+    .pwd-row {
+        display: grid;
+        grid-template-columns: 165px 1fr;
+        gap: 16px;
+        align-items: center;
+        margin-bottom: 18px;
+    }
+    @@media (max-width: 600px) { .pwd-row { grid-template-columns: 1fr; gap: 6px; } }
+    .pwd-label {
+        font-size: 13.5px;
+        font-weight: 600;
+        color: #475569;
+        text-align: right;
+    }
+    @@media (max-width: 600px) { .pwd-label { text-align: left; } }
+    .pwd-input-wrap {
+        display: flex;
+        align-items: center;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        background: #fff;
+        overflow: hidden;
+        transition: border-color .15s;
+    }
+    .pwd-input-wrap:focus-within { border-color: #198754; }
+    .pwd-icon {
+        padding: 0 12px;
+        color: #64748b;
+        font-size: 14px;
+    }
+    .pwd-input {
+        flex: 1;
+        border: none;
+        outline: none;
+        padding: 10px 12px 10px 0;
+        font-size: 14px;
+        color: #0f172a;
+    }
+    .pwd-hint {
+        font-size: 12px;
+        color: #64748b;
+        margin-top: 5px;
+    }
+    .pwd-btn {
+        background: #198754;
+        color: #fff;
+        border: none;
+        padding: 11px 28px;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: 13.5px;
+        cursor: pointer;
+        transition: background .15s;
+    }
+    .pwd-btn:hover { background: #157347; }
+</style>
+
+<div class="om-wrap">
+    <aside class="om-side">
+        <div style="display:flex; align-items:center; gap:12px; padding-bottom:16px; border-bottom:1px solid #f1f5f9; margin-bottom:10px;">
+            <div class="om-avatar">TK</div>
+            <div>
+                <div style="font-weight:800; color:#0f172a; font-size:15px;">Khách Trần B</div>
+                <a asp-page="/Customer/TaiKhoan/HoSo" style="font-size:12.5px; color:#64748b; text-decoration:none;">✏️ Sửa hồ sơ</a>
+            </div>
+        </div>
+        <a asp-page="/Customer/TaiKhoan/HoSo" class="om-menu-item">👤 Hồ sơ của tôi</a>
+        <a asp-page="/Customer/TaiKhoan/DoiMatKhau" class="om-menu-item active">🔒 Đổi mật khẩu</a>
+        <a asp-page="/Customer/DonHang/LichSuMuaHang" class="om-menu-item">📋 Đơn mua của tôi</a>
+    </aside>
+
+    <main class="om-main">
+        <h1 style="font-size:22px; font-weight:800; color:#0f172a; margin:0 0 4px;">Đổi Mật Khẩu</h1>
+        <p style="color:#64748b; font-size:13.5px; margin:0;">Để bảo mật tài khoản, vui lòng không chia sẻ mật khẩu cho người khác</p>
+
+        <form method="post" class="pwd-form">
+            <div class="pwd-row">
+                <label class="pwd-label">Mật khẩu hiện tại</label>
+                <div class="pwd-input-wrap">
+                    <span class="pwd-icon">🔑</span>
+                    <input type="password" class="pwd-input" placeholder="Nhập mật khẩu hiện tại" required />
                 </div>
+            </div>
+
+            <div class="pwd-row" style="align-items: start;">
+                <label class="pwd-label" style="padding-top: 10px;">Mật khẩu mới</label>
                 <div>
-                    <h6 class="fw-bold mb-0 text-dark">Khách Trần B</h6>
-                    <span class="text-muted small"><i class="bi bi-pencil-square"></i> Sửa hồ sơ</span>
+                    <div class="pwd-input-wrap">
+                        <span class="pwd-icon">🔒</span>
+                        <input type="password" class="pwd-input" placeholder="Nhập mật khẩu mới" required />
+                    </div>
+                    <div class="pwd-hint">Mật khẩu phải dài từ 6 ký tự, bao gồm chữ và số.</div>
                 </div>
             </div>
-            
-            <div class="list-group border-0 shadow-sm rounded-4 overflow-hidden">
-                <a asp-page="/Customer/TaiKhoan/HoSo" class="list-group-item list-group-item-action py-3 fw-medium text-dark">
-                    <i class="bi bi-person-circle me-2"></i> Hồ sơ của tôi
-                </a>
-                <a asp-page="/Customer/TaiKhoan/DoiMatKhau" class="list-group-item list-group-item-action active bg-success border-success py-3 fw-medium">
-                    <i class="bi bi-shield-lock me-2"></i> Đổi mật khẩu
-                </a>
-                <a asp-page="/Customer/DonHang/LichSuMuaHang" class="list-group-item list-group-item-action py-3 fw-medium text-dark">
-                    <i class="bi bi-receipt me-2"></i> Đơn mua của tôi
-                </a>
-            </div>
-        </div>
 
-        <!-- CỘT PHẢI: NỘI DUNG ĐỔI MẬT KHẨU -->
-        <div class="col-lg-9">
-            <div class="card border-0 shadow-sm rounded-4">
-                <div class="card-header bg-white border-bottom p-4 rounded-top-4">
-                    <h5 class="fw-black m-0" style="font-weight: 800;">Đổi Mật Khẩu</h5>
-                    <p class="text-muted m-0 mt-1">Để bảo mật tài khoản, vui lòng không chia sẻ mật khẩu cho người khác</p>
-                </div>
-                <div class="card-body p-4 p-md-5">
-                    <form method="post">
-                        
-                        <div class="row mb-4 align-items-center">
-                            <label class="col-sm-4 col-md-3 col-form-label fw-semibold text-muted text-sm-end">Mật khẩu hiện tại</label>
-                            <div class="col-sm-8 col-md-7">
-                                <div class="input-group">
-                                    <span class="input-group-text bg-white border-success-subtle text-muted"><i class="bi bi-key-fill"></i></span>
-                                    <input type="password" class="form-control shadow-none border-success-subtle" placeholder="Nhập mật khẩu hiện tại" required>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mb-4 align-items-center">
-                            <label class="col-sm-4 col-md-3 col-form-label fw-semibold text-muted text-sm-end">Mật khẩu mới</label>
-                            <div class="col-sm-8 col-md-7">
-                                <div class="input-group">
-                                    <span class="input-group-text bg-white border-success-subtle text-muted"><i class="bi bi-lock-fill"></i></span>
-                                    <input type="password" class="form-control shadow-none border-success-subtle" placeholder="Nhập mật khẩu mới" required>
-                                </div>
-                                <div class="form-text text-muted small">Mật khẩu phải dài từ 6 ký tự, bao gồm chữ và số.</div>
-                            </div>
-                        </div>
-
-                        <div class="row mb-5 align-items-center">
-                            <label class="col-sm-4 col-md-3 col-form-label fw-semibold text-muted text-sm-end">Xác nhận mật khẩu</label>
-                            <div class="col-sm-8 col-md-7">
-                                <div class="input-group">
-                                    <span class="input-group-text bg-white border-success-subtle text-muted"><i class="bi bi-check-circle-fill"></i></span>
-                                    <input type="password" class="form-control shadow-none border-success-subtle" placeholder="Nhập lại mật khẩu mới" required>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-sm-8 offset-sm-4 col-md-7 offset-md-3">
-                                <button type="submit" class="btn btn-success px-5 py-2 rounded-pill fw-bold shadow-sm">
-                                    CẬP NHẬT MẬT KHẨU
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+            <div class="pwd-row">
+                <label class="pwd-label">Xác nhận mật khẩu</label>
+                <div class="pwd-input-wrap">
+                    <span class="pwd-icon">✔️</span>
+                    <input type="password" class="pwd-input" placeholder="Nhập lại mật khẩu mới" required />
                 </div>
             </div>
-        </div>
-    </div>
+
+            <div class="pwd-row" style="margin-top: 24px; margin-bottom: 0;">
+                <div></div>
+                <div>
+                    <button type="submit" class="pwd-btn">CẬP NHẬT MẬT KHẨU</button>
+                </div>
+            </div>
+        </form>
+    </main>
 </div>

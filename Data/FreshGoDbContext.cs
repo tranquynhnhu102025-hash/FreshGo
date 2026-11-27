@@ -20,7 +20,7 @@ public class FreshGoDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Shipment> Shipments => Set<Shipment>();
     public DbSet<Attendance> Attendances => Set<Attendance>();
     public DbSet<DefectiveProduct> DefectiveProducts => Set<DefectiveProduct>();
-    public DbSet<Voucher> Vouchers => Set<Voucher>();
+    public DbSet<AdminVoucher> Vouchers => Set<AdminVoucher>();
     public DbSet<Event> Events => Set<Event>();
     public DbSet<LoyaltyTransaction> LoyaltyTransactions => Set<LoyaltyTransaction>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
@@ -37,9 +37,9 @@ public class FreshGoDbContext : IdentityDbContext<ApplicationUser>
         builder.Entity<Order>().Property(x => x.Subtotal).HasPrecision(18, 2);
         builder.Entity<Order>().Property(x => x.DiscountAmount).HasPrecision(18, 2);
         builder.Entity<Order>().Property(x => x.TotalAmount).HasPrecision(18, 2);
-        builder.Entity<Voucher>().Property(x => x.DiscountPercent).HasPrecision(5, 2);
-        builder.Entity<Voucher>().Property(x => x.MaxDiscount).HasPrecision(18, 2);
-        builder.Entity<Voucher>().Property(x => x.MinOrderValue).HasPrecision(18, 2);
+        builder.Entity<AdminVoucher>().Property(x => x.DiscountPercent).HasPrecision(5, 2);
+        builder.Entity<AdminVoucher>().Property(x => x.MaxDiscount).HasPrecision(18, 2);
+        builder.Entity<AdminVoucher>().Property(x => x.MinOrderValue).HasPrecision(18, 2);
         builder.Entity<Inventory>().HasIndex(x => new { x.WarehouseId, x.ProductId }).IsUnique();
         builder.Entity<Warehouse>().HasOne(x => x.Branch).WithMany().HasForeignKey(x => x.BranchId).OnDelete(DeleteBehavior.SetNull);
         builder.Entity<Product>().HasOne(x => x.Category).WithMany().HasForeignKey(x => x.CategoryId).OnDelete(DeleteBehavior.Restrict);
@@ -54,7 +54,7 @@ public class FreshGoDbContext : IdentityDbContext<ApplicationUser>
         builder.Entity<DefectiveProduct>().HasOne(x => x.Product).WithMany().HasForeignKey(x => x.ProductId).OnDelete(DeleteBehavior.Restrict);
         builder.Entity<Branch>().HasIndex(x => x.Name);
         builder.Entity<Product>().HasIndex(x => x.Name);
-        builder.Entity<Voucher>().HasIndex(x => x.Code).IsUnique();
+        builder.Entity<AdminVoucher>().HasIndex(x => x.Code).IsUnique();
         builder.Entity<Order>().HasIndex(x => x.OrderCode).IsUnique();
         builder.Entity<GiftRedemption>().HasOne(x => x.Gift).WithMany().HasForeignKey(x => x.GiftId).OnDelete(DeleteBehavior.Restrict);
     }
